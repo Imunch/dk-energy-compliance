@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DK Energy Compliance — Vælg område</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8f9fb;
+  --bg-wash: #f3f4f6;
+  --surface: #ffffff;
+  --surface-hover: #fafbfc;
+  --border: #e2e4e9;
+  --border-subtle: #eef0f2;
+
+  --teal: #0f766e; --teal-bg: #f0fdfa; --teal-ring: #99f6e4;
+  --indigo: #4338ca; --indigo-bg: #eef2ff; --indigo-ring: #c7d2fe;
+  --green: #15803d; --green-bg: #f0fdf4; --green-ring: #86efac;
+  --rose: #be123c; --rose-bg: #fff1f2; --rose-ring: #fecdd3;
+  --amber: #b45309; --amber-bg: #fffbeb; --amber-ring: #fde68a;
+  --violet: #6d28d9; --violet-bg: #f5f3ff; --violet-ring: #ddd6fe;
+
+  --text: #0f172a;
+  --text2: #334155;
+  --text3: #64748b;
+  --text4: #94a3b8;
+
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --r: 8px; --r-md: 10px; --r-lg: 12px;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.05);
+  --shadow: 0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+  --t: .15s ease;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size: 14.5px; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv01','cv02','cv11';
+}
+
+header {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .55rem 1.25rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 20;
+}
+.logo {
+  width: 28px; height: 28px; border-radius: var(--r);
+  display: grid; place-items: center;
+  font-weight: 800; font-size: 11px; color: #fff;
+  background: linear-gradient(135deg,#0f766e,#14b8a6);
+}
+header h1 { font-size: .85rem; font-weight: 700; letter-spacing: -.03em; }
+.user {
+  margin-left: auto;
+  font-size: .7rem; color: var(--text3); font-weight: 500;
+}
+
+.hero {
+  max-width: 900px; margin: 0 auto;
+  padding: 3rem 1.5rem 1.5rem; text-align: center;
+}
+.hero h2 {
+  font-size: 2rem; font-weight: 800;
+  letter-spacing: -.045em; line-height: 1.1;
+  margin-bottom: .6rem;
+}
+.hero p {
+  font-size: .95rem; color: var(--text3);
+  max-width: 560px; margin: 0 auto 1.25rem;
+  line-height: 1.55;
+}
+
+.searchbox {
+  position: relative;
+  max-width: 640px; margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow);
+  display: flex; align-items: center;
+  padding: .35rem .5rem .35rem 1rem;
+  transition: all var(--t);
+}
+.searchbox:focus-within {
+  border-color: #94a3b8;
+  box-shadow: 0 0 0 3px rgba(148,163,184,.15), var(--shadow);
+}
+.searchbox svg {
+  width: 16px; height: 16px; color: var(--text4);
+  flex-shrink: 0;
+}
+.searchbox input {
+  flex: 1;
+  border: none; outline: none; background: none;
+  font: 500 .9rem var(--sans);
+  padding: .7rem .8rem;
+  color: var(--text);
+}
+.searchbox input::placeholder { color: var(--text4); }
+.searchbox button {
+  background: var(--text);
+  color: #fff; border: none;
+  padding: .55rem 1rem;
+  border-radius: var(--r);
+  font: 600 .8rem var(--sans);
+  cursor: pointer;
+  transition: all var(--t);
+}
+.searchbox button:hover { background: #1e293b; }
+
+.scenarios {
+  max-width: 640px; margin: .9rem auto 0;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 5px;
+}
+.scenario-label {
+  width: 100%; text-align: center;
+  font-size: .65rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--text4);
+  margin-bottom: .25rem;
+}
+.scenario {
+  padding: 5px 12px; border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: .72rem; font-weight: 600;
+  cursor: pointer;
+  transition: all var(--t);
+}
+.scenario:hover {
+  background: var(--bg-wash);
+  border-color: var(--text4);
+}
+
+.match-result {
+  max-width: 640px; margin: 1rem auto 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: .9rem 1.1rem;
+  animation: slideIn .2s ease-out;
+  display: none;
+}
+.match-result.show { display: block; }
+@keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.match-head {
+  font-size: .68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--text4);
+  margin-bottom: .5rem;
+}
+.match-list { display: flex; flex-direction: column; gap: .35rem; }
+.match-item {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .5rem .7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  text-decoration: none; color: var(--text);
+  transition: all var(--t);
+  cursor: pointer;
+}
+.match-item:hover { background: var(--bg-wash); border-color: var(--text4); }
+.match-icon {
+  width: 26px; height: 26px; border-radius: 6px;
+  display: grid; place-items: center;
+  color: #fff; font-weight: 800; font-size: 11px;
+  flex-shrink: 0;
+}
+.match-body { flex: 1; min-width: 0; }
+.match-name { font-weight: 700; font-size: .82rem; }
+.match-reason { font-size: .7rem; color: var(--text3); margin-top: 1px; }
+.match-score {
+  font-size: .65rem; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px;
+  background: var(--bg-wash); color: var(--text3);
+}
+.match-arrow {
+  color: var(--text4);
+  font-size: .9rem;
+  transition: transform var(--t);
+}
+.match-item:hover .match-arrow { transform: translateX(3px); color: var(--text2); }
+
+.section-head {
+  max-width: 1100px;
+  margin: 2.25rem auto 0;
+  padding: 0 1.5rem;
+  display: flex; align-items: baseline; gap: .5rem;
+}
+.section-head h3 {
+  font-size: 1.05rem; font-weight: 800;
+  letter-spacing: -.025em;
+}
+.section-head span {
+  font-size: .75rem; color: var(--text4);
+}
+
+.grid {
+  max-width: 1100px;
+  margin: .75rem auto 0;
+  padding: 0 1.5rem 3rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .85rem;
+}
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.1rem 1.2rem;
+  cursor: pointer;
+  transition: all .18s ease;
+  display: flex; flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--accent);
+}
+.card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(15,23,42,.08);
+  transform: translateY(-2px);
+}
+
+.card.agent-n { --accent: var(--teal); }
+.card.agent-m { --accent: var(--indigo); }
+.card.agent-e { --accent: var(--green); }
+.card.agent-c { --accent: var(--rose); }
+.card.agent-g { --accent: var(--amber); }
+.card.agent-o { --accent: var(--violet); }
+
+.c-head { display: flex; align-items: center; gap: .6rem; margin-bottom: .55rem; }
+.c-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: grid; place-items: center;
+  color: #fff; font-weight: 800; font-size: 14px;
+  flex-shrink: 0;
+}
+.c-title {
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: -.025em;
+}
+.c-desc {
+  font-size: .78rem; color: var(--text2);
+  line-height: 1.5;
+  margin-bottom: .75rem;
+}
+.c-tags {
+  display: flex; flex-wrap: wrap; gap: 3px;
+  margin-bottom: .7rem;
+}
+.c-tag {
+  font-size: .62rem; font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: var(--bg-wash);
+  color: var(--text3);
+}
+.c-cta {
+  margin-top: auto;
+  font-size: .72rem; font-weight: 700;
+  color: var(--accent);
+  display: flex; align-items: center; gap: .3rem;
+  padding-top: .55rem;
+  border-top: 1px solid var(--border-subtle);
+}
+.c-cta::after {
+  content: '→';
+  transition: transform var(--t);
+}
+.card:hover .c-cta::after { transform: translateX(3px); }
+
+.footer {
+  max-width: 1100px; margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+  border-top: 1px solid var(--border-subtle);
+  text-align: center;
+  font-size: .7rem; color: var(--text4);
+  line-height: 1.6;
+}
+.footer strong { color: var(--text3); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DK·E</div>
+  <h1>DK Energy Compliance</h1>
+  <div class="user" id="u"></div>
+</header>
+
+<section class="hero">
+  <h2>Hvor har du brug for hjælp?</h2>
+  <p>Beskriv din opgave, vælg et scenario, eller gå direkte til et af de seks compliance-områder nedenfor.</p>
+
+  <form class="searchbox" onsubmit="event.preventDefault();doSearch()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+    <input id="q" placeholder='Fx "Vi skal have en 500 MW havvindpark godkendt" eller "CBAM-rapportering"' autocomplete="off">
+    <button type="submit">Find område</button>
+  </form>
+
+  <div class="scenarios">
+    <div class="scenario-label">Typiske opgaver</div>
+    <div class="scenario" onclick="scenario('Jeg skal etablere en 200 MW solpark på land')">200 MW solpark på land</div>
+    <div class="scenario" onclick="scenario('Vi vil bygge et 500 MW havvindprojekt')">Havvind-udbud</div>
+    <div class="scenario" onclick="scenario('Et batteri på 50 MW skal nettilsluttes i DK1')">Nettilslutning batteri</div>
+    <div class="scenario" onclick="scenario('Cyberhændelse — vi skal rapportere')">Cyberhændelse</div>
+    <div class="scenario" onclick="scenario('RFNBO-certificering af grøn brint fra PtX-anlæg')">RFNBO grøn brint</div>
+    <div class="scenario" onclick="scenario('CSRD-rapportering og ESRS E1 klimadata')">CSRD rapportering</div>
+    <div class="scenario" onclick="scenario('Mistanke om markedsmanipulation på Nord Pool')">Markedsmisbrug</div>
+    <div class="scenario" onclick="scenario('Indtægtsramme-ansøgning til Forsyningstilsynet')">Indtægtsramme</div>
+  </div>
+
+  <div class="match-result" id="match">
+    <div class="match-head">Anbefalede områder</div>
+    <div class="match-list" id="matches"></div>
+  </div>
+</section>
+
+<div class="section-head">
+  <h3>Alle områder</h3>
+  <span>— vælg ét for at åbne chat med den rette agent</span>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="footer">
+  <strong>Bemærk:</strong> Assistenten er et <em>arbejdsredskab</em> til intern brug i Energinet. Alle svar er udgangspunkt for videre sagsbehandling — endelig compliance-vurdering sker hos jurist eller relevant myndighed (Forsyningstilsynet, CFCS, Energistyrelsen, Miljøstyrelsen).
+</div>
+
+<script>
+const AGENTS = {
+  n: {
+    name:'Netdrift', icon:'N', grad:'linear-gradient(135deg,#0f766e,#14b8a6)',
+    desc:'TSO- og DSO-netkompliance. SOGL, nettilslutning, frekvensreserver, HVDC, N-1, Elforsyningsloven.',
+    tags:['SOGL','NC RfG','HVDC','Frekvensreserver','N-1','Nettilslutning','Elforsyningsloven'],
+    kw:['sogl','2017/1485','nc rfg','rfg','2016/631','hvdc','2016/1447','frekvens','fcr','afrr','mfrr','reserver','n-1','kontingens','nettilslut','tilslutning','tf','teknisk forskrift','skagerrak','kontek','storebalt','cobracable','viking','kriegers flak','brp','bsp','balance','elforsyningsloven','netregler','batteri','solpark','vindpark','landvind','anlaeg','mw','tso','dso','drift','picasso','mari','lfsm','frt','type a','type b','type c','type d']
+  },
+  m: {
+    name:'Marked', icon:'M', grad:'linear-gradient(135deg,#4338ca,#6366f1)',
+    desc:'Engrosenergimarkedet. REMIT II, CACM, SDAC/SIDC, 15-min MTU, markedsmisbrug, UMM-offentliggørelse.',
+    tags:['REMIT II','CACM','SDAC','SIDC','15-min MTU','Markedsmisbrug','UMM'],
+    kw:['remit','1227/2011','2024/1106','cacm','2015/1222','sdac','sidc','xbid','euphemia','15-min','mtu','market time unit','spoofing','wash','layering','manipulation','misbrug','insider','inside information','umm','urgent market message','nord pool','nemo','nordpool','intraday','day-ahead','ntc','flow-based','engros','handel','trader','balanceansvar','acer','forsyningstilsyn','markedsmanipulation']
+  },
+  e: {
+    name:'Miljø', icon:'E', grad:'linear-gradient(135deg,#15803d,#22c55e)',
+    desc:'Klima-, miljø- og VE-ret. EU ETS, CBAM, RED III, VVM, Klimaloven, havvind-udbud, VE-loven.',
+    tags:['EU ETS','CBAM','RED III','VVM','Klimaloven','Havvind','VE-loven'],
+    kw:['ets','kvoter','allowances','2003/87','2023/959','co2','cbam','2023/956','graensejuster','red iii','2023/2413','42,5%','go-to zones','vedvarende','vvm','miljovurder','miljøvurder','bilag 1','bilag 2','klimaloven','965/2020','70%','2030','2045','klimaneutral','havvind','offshore','thor','energiø','kriegers flak','ve-loven','1791/2023','koberet','naboerstatning','grøn pulje','miljogodkend','miljøgodkend','mbl','miljøbeskyttelse','landvind','solpark','ibrugtag','tillad','godkend','klagenævn']
+  },
+  c: {
+    name:'Cyber', icon:'C', grad:'linear-gradient(135deg,#be123c,#f43f5e)',
+    desc:'Cyber- og informationssikkerhed. NIS2, NC Cyber, CER-direktivet, hændelsesrapportering, OT-sikkerhed.',
+    tags:['NIS2','NC Cyber','CER','Hændelsesrapportering','OT-sikkerhed','IEC 62443'],
+    kw:['nis2','nis 2','2022/2555','nc cyber','2024/1366','cer','2022/2557','cybersikker','cyber','hack','angreb','haendelse','incident','ransomware','phishing','24 time','72 time','vaesentlig','vigtig','kritisk','ecii','hii','cii','scada','ics','ot','industrial','62443','leverandor','supply chain','tredjepart','cfcs','center for cyber','zero-trust']
+  },
+  g: {
+    name:'Gas & Brint', icon:'G', grad:'linear-gradient(135deg,#b45309,#f59e0b)',
+    desc:'Gas-TSO-rollen, brintpakken 2024, RFNBO, dansk PtX-udbud, gaskvalitet, CO2-transport, biogas.',
+    tags:['Brintpakken','RFNBO','PtX-udbud','Gaskvalitet','CO2-transport','Biogas'],
+    kw:['brint','hydrogen','pakken','dekarboniseret','2024/1788','2024/1789','rfnbo','2023/1184','2023/1185','additionality','tidsmatch','geografi','gron brint','grøn brint','ptx','power-to-x','elektrolyse','elektrolysor','500 mw','pulje','gas','gasnet','gaskval','wobbe','metan','biometh','biogas','opgrad','gas-tso','natur gas','lng','baltic pipe','tyra','co2','ccs','ccus','carbon capture','rorled','transport']
+  },
+  o: {
+    name:'Økonomi', icon:'Ø', grad:'linear-gradient(135deg,#6d28d9,#8b5cf6)',
+    desc:'Økonomisk regulering. Indtægtsrammer, tariffer, statsstøtte, CSRD/ESRS, forsyningsudbud, TEN-E/PCI.',
+    tags:['Indtægtsrammer','Tariffer','Statsstøtte','CSRD','ESRS','EU-udbud','TEN-E'],
+    kw:['indtaegt','indtægt','ramme','wacc','afkast','forsyningstilsyn','fst','tarif','§ 73','73','omkostningsaeg','statsstott','state aid','ceeag','gber','cfd','notif','2014/25','udbud','forsyningsvirks','csrd','2022/2464','esrs','2023/2772','sustainability','baeredyg','dobbelt vaesent','ten-e','2022/869','pci','projects of common','cbca','cef','regulering','forretning','indkøb']
+  }
+};
+
+// Scenario mappings — each scenario maps to 1-2 primary agents with a reason
+const SCENARIO_MAP = {
+  'Jeg skal etablere en 200 MW solpark på land': [
+    {a:'e', reason:'VVM-proces, miljøgodkendelse og lokal accept (køberet, grøn pulje)'},
+    {a:'n', reason:'Nettilslutning efter NC RfG Type C og TF 3.2.3'}
+  ],
+  'Vi vil bygge et 500 MW havvindprojekt': [
+    {a:'e', reason:'VVM bilag 1 offshore, havvind-udbudsmodel, statsstøtte'},
+    {a:'n', reason:'Nettilslutning Type D + HVDC-evt.'},
+    {a:'o', reason:'CfD-statsstøttenotifikation, TEN-E/PCI-ansøgning'}
+  ],
+  'Et batteri på 50 MW skal nettilsluttes i DK1': [
+    {a:'n', reason:'TF 3.2.1 batteri, Type B/C-klassifikation, FRT-krav'}
+  ],
+  'Cyberhændelse — vi skal rapportere': [
+    {a:'c', reason:'NIS2 art. 23 frister (24/72 timer), rapport til CFCS'}
+  ],
+  'RFNBO-certificering af grøn brint fra PtX-anlæg': [
+    {a:'g', reason:'RFNBO tre-punkts-test, brintpakken 2024'},
+    {a:'e', reason:'Miljøgodkendelse af elektrolyse-anlæg'}
+  ],
+  'CSRD-rapportering og ESRS E1 klimadata': [
+    {a:'o', reason:'Dobbelt væsentlighed, 12 ESRS-standarder'},
+    {a:'e', reason:'E1 klimadata og TCFD-overlap'}
+  ],
+  'Mistanke om markedsmanipulation på Nord Pool': [
+    {a:'m', reason:'REMIT II art. 5, typologi, indikatorer, ACER/FST-proces'}
+  ],
+  'Indtægtsramme-ansøgning til Forsyningstilsynet': [
+    {a:'o', reason:'FST metodevejledning, WACC, OPEX/CAPEX-struktur'}
+  ]
+};
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Render the 6 agent cards
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = Object.entries(AGENTS).map(([id,a]) => `
+    <a class="card agent-${id}" href="chat.html?agent=${id}">
+      <div class="c-head">
+        <div class="c-icon" style="background:${a.grad}">${a.icon}</div>
+        <div class="c-title">${a.name}</div>
+      </div>
+      <div class="c-desc">${a.desc}</div>
+      <div class="c-tags">${a.tags.map(t=>`<span class="c-tag">${t}</span>`).join('')}</div>
+      <div class="c-cta">Åbn ${a.name.toLowerCase()}</div>
+    </a>
+  `).join('');
+}
+
+// Score each agent against a query string and return sorted matches
+function scoreAgents(query) {
+  const q = query.toLowerCase();
+  const scores = Object.entries(AGENTS).map(([id,a]) => {
+    let score = 0;
+    const hits = [];
+    // Keyword matching — each hit adds 1, exact multi-word terms add 2
+    for (const k of a.kw) {
+      if (q.includes(k)) {
+        score += k.length > 4 ? 2 : 1;
+        hits.push(k);
+      }
+    }
+    // Tag matching — case-insensitive
+    for (const t of a.tags) {
+      if (q.includes(t.toLowerCase())) {
+        score += 3;
+        hits.push(t);
+      }
+    }
+    // Name match
+    if (q.includes(a.name.toLowerCase())) score += 4;
+    return {id, score, hits: hits.slice(0,3)};
+  }).filter(s => s.score > 0).sort((a,b) => b.score - a.score);
+  return scores.slice(0, 3);
+}
+
+function showMatches(results, manualReasons) {
+  const box = document.getElementById('match');
+  const list = document.getElementById('matches');
+  if (!results || !results.length) {
+    box.classList.remove('show');
+    return;
+  }
+  list.innerHTML = results.map(r => {
+    const a = AGENTS[r.id];
+    const reason = manualReasons && manualReasons[r.id] ? manualReasons[r.id] : (r.hits && r.hits.length ? `Matches: ${r.hits.join(', ')}` : 'Relevant område');
+    return `
+      <a class="match-item" href="chat.html?agent=${r.id}">
+        <div class="match-icon" style="background:${a.grad}">${a.icon}</div>
+        <div class="match-body">
+          <div class="match-name">${a.name}</div>
+          <div class="match-reason">${escapeHtml(reason)}</div>
+        </div>
+        ${r.score ? `<div class="match-score">${r.score}</div>` : ''}
+        <div class="match-arrow">→</div>
+      </a>`;
+  }).join('');
+  box.classList.add('show');
+}
+
+function doSearch() {
+  const q = document.getElementById('q').value.trim();
+  if (!q) return;
+  const results = scoreAgents(q);
+  if (!results.length) {
+    // No match — show all agents as fallback
+    showMatches(Object.keys(AGENTS).map(id=>({id,score:0,hits:[]})), {});
+    return;
+  }
+  showMatches(results);
+}
+
+function scenario(text) {
+  document.getElementById('q').value = text;
+  const mapping = SCENARIO_MAP[text];
+  if (mapping) {
+    const reasons = {};
+    const results = mapping.map(m => {
+      reasons[m.a] = m.reason;
+      return {id: m.a, score: 0, hits: []};
+    });
+    showMatches(results, reasons);
+  } else {
+    doSearch();
+  }
+  document.getElementById('match').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+// Show logged-in user if sessionStorage has one (set by index.html)
+function showUser() {
+  try {
+    const raw = sessionStorage.getItem('deUser');
+    if (raw) {
+      const obj = JSON.parse(raw);
+      const el = document.getElementById('u');
+      if (el) el.textContent = obj.name || obj.email || '';
+    }
+  } catch(e) {}
+}
+
+// Init
+renderGrid();
+showUser();
+document.getElementById('q').focus();
+
+// Live search as user types (debounced)
+let searchTimer;
+document.getElementById('q').addEventListener('input', (e) => {
+  clearTimeout(searchTimer);
+  const v = e.target.value.trim();
+  if (v.length < 3) {
+    document.getElementById('match').classList.remove('show');
+    return;
+  }
+  searchTimer = setTimeout(doSearch, 250);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log ind — DK Energy Compliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8fafb;
+  --bg-wash: #f3f4f6;
+  --surface: #ffffff;
+  --surface-hover: #fafbfc;
+  --border: #e2e4e9;
+  --border-strong: #d1d5db;
+  --border-subtle: #eef0f2;
+
+  --teal: #0f766e;
+  --teal-bg: #f0fdfa;
+  --teal-ring: #99f6e4;
+  --teal-text: #115e59;
+
+  --green: #15803d;
+  --green-bg: #f0fdf4;
+
+  --amber: #b45309;
+  --amber-bg: #fffbeb;
+
+  --red: #b91c1c;
+  --red-bg: #fef2f2;
+
+  --text: #0f172a;
+  --text2: #334155;
+  --text3: #64748b;
+  --text4: #94a3b8;
+  --text5: #cbd5e1;
+
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --r-sm: 6px;
+  --r: 8px;
+  --r-md: 10px;
+  --r-lg: 12px;
+  --shadow: 0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.07);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.04);
+  --t: .14s ease;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size: 15px; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv01','cv02','cv11';
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(15,118,110,.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(21,128,61,.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.login-card {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  padding: 2.5rem 2rem 2rem;
+  animation: fadeIn .4s ease-out;
+}
+
+.brand { display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; }
+
+.logo {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  display: grid; place-items: center;
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  color: #fff;
+  font-weight: 800;
+  font-size: 15px;
+  margin-bottom: .75rem;
+  box-shadow: 0 4px 12px rgba(15,118,110,.25);
+  letter-spacing: .02em;
+}
+
+.brand h1 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -.03em;
+  color: var(--text);
+  text-align: center;
+}
+
+.brand p {
+  font-size: .8rem;
+  color: var(--text3);
+  margin-top: .25rem;
+}
+
+.form-group { margin-bottom: 1rem; }
+
+.form-label {
+  display: block;
+  font-size: .75rem;
+  font-weight: 600;
+  color: var(--text2);
+  margin-bottom: .35rem;
+  letter-spacing: .01em;
+}
+
+.input-wrap { position: relative; }
+
+.input-wrap svg {
+  position: absolute;
+  left: .75rem;
+  top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px;
+  stroke: var(--text4);
+  fill: none;
+  stroke-width: 1.8;
+  pointer-events: none;
+  transition: stroke var(--t);
+}
+
+.form-input {
+  width: 100%;
+  padding: .6rem .75rem .6rem 2.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font: 400 .875rem/1.4 var(--sans);
+  color: var(--text);
+  transition: all var(--t);
+  outline: none;
+}
+
+.form-input::placeholder { color: var(--text4); }
+.form-input:hover { border-color: var(--border-strong); }
+.form-input:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(15,118,110,.1);
+}
+.form-input:focus ~ svg { stroke: var(--teal); }
+
+.toggle-pw {
+  position: absolute;
+  right: .5rem;
+  top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  padding: .25rem;
+  color: var(--text4);
+  display: grid; place-items: center;
+  border-radius: 4px;
+  transition: all var(--t);
+}
+.toggle-pw:hover { color: var(--text3); background: var(--bg-wash); }
+.toggle-pw svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+
+.extras {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.remember {
+  display: flex; align-items: center; gap: .4rem;
+  cursor: pointer; font-size: .78rem; color: var(--text3); user-select: none;
+}
+
+.remember input[type="checkbox"] {
+  appearance: none;
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--t);
+  position: relative;
+}
+
+.remember input[type="checkbox"]:checked {
+  background: var(--teal);
+  border-color: var(--teal);
+}
+
+.remember input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  left: 4.5px; top: 1.5px;
+  width: 5px; height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.forgot {
+  font-size: .78rem;
+  color: var(--teal);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--t);
+}
+.forgot:hover { color: #115e59; }
+
+.btn-primary {
+  width: 100%;
+  padding: .7rem 1rem;
+  background: linear-gradient(135deg, #0f766e, #14b8a6);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font: 600 .875rem/1 var(--sans);
+  cursor: pointer;
+  transition: all .2s;
+  box-shadow: 0 1px 3px rgba(15,118,110,.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #115e59, #0f766e);
+  box-shadow: 0 2px 8px rgba(15,118,110,.35);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(15,118,110,.2); }
+.btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+.btn-primary .spinner {
+  display: none;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+  margin-right: .4rem;
+}
+.btn-primary.loading .spinner { display: inline-block; }
+.btn-primary.loading .btn-text { opacity: .7; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.divider { display: flex; align-items: center; gap: .75rem; margin: 1.25rem 0; }
+.divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.divider span {
+  font-size: .7rem;
+  color: var(--text4);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.sso-grid { display: flex; gap: .5rem; }
+
+.btn-sso {
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: .4rem;
+  padding: .55rem .5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font: 500 .78rem/1 var(--sans);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all var(--t);
+}
+
+.btn-sso:hover { background: var(--bg-wash); border-color: var(--border-strong); }
+.btn-sso svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+.error-msg {
+  display: none;
+  align-items: center; gap: .4rem;
+  padding: .5rem .75rem;
+  background: var(--red-bg);
+  border: 1px solid #fecaca;
+  border-radius: var(--r);
+  margin-bottom: 1rem;
+  font-size: .78rem;
+  color: var(--red);
+}
+.error-msg.show { display: flex; }
+.error-msg svg { width: 16px; height: 16px; stroke: var(--red); fill: none; stroke-width: 2; flex-shrink: 0; }
+
+.card-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.card-footer p { font-size: .78rem; color: var(--text3); }
+
+.card-footer a {
+  color: var(--teal);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color var(--t);
+}
+.card-footer a:hover { color: #115e59; }
+
+.bottom-text {
+  position: fixed;
+  bottom: 1rem;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: .65rem;
+  color: var(--text4);
+}
+
+.test-hint {
+  margin-top: 1rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
+.test-toggle {
+  width: 100%;
+  display: flex; align-items: center; gap: .4rem;
+  padding: .5rem .75rem;
+  background: var(--bg-wash);
+  border: none;
+  cursor: pointer;
+  font: 600 .7rem/1 var(--sans);
+  color: var(--text3);
+  transition: all var(--t);
+}
+.test-toggle:hover { background: var(--teal-bg); color: var(--teal-text); }
+.test-toggle .chevron { margin-left: auto; transition: transform .2s; }
+.test-creds.open + .test-toggle .chevron { transform: rotate(180deg); }
+
+.test-creds { max-height: 0; overflow: hidden; transition: max-height .25s ease; }
+.test-creds.open { max-height: 240px; }
+
+.test-creds table { width: 100%; border-collapse: collapse; font-size: .7rem; }
+.test-creds th {
+  text-align: left;
+  padding: .35rem .75rem;
+  font-weight: 600;
+  color: var(--text3);
+  background: var(--bg);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.test-creds td {
+  padding: .35rem .75rem;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.test-creds tr:last-child td { border-bottom: none; }
+.test-creds tbody tr { cursor: pointer; transition: background var(--t); }
+.test-creds tbody tr:hover { background: var(--teal-bg); }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 440px) {
+  .login-card { padding: 2rem 1.5rem 1.5rem; }
+  .sso-grid { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="brand">
+    <div class="logo">DK·E</div>
+    <h1>DK Energy Compliance</h1>
+    <p>Log ind for at fortsætte</p>
+  </div>
+
+  <div class="error-msg" id="error">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <span id="errorText">Forkert brugernavn eller adgangskode</span>
+  </div>
+
+  <form id="loginForm" onsubmit="return handleLogin(event)">
+    <div class="form-group">
+      <label class="form-label" for="email">Brugernavn</label>
+      <div class="input-wrap">
+        <input class="form-input" id="email" type="text" placeholder="Indtast brugernavn" autocomplete="username" required>
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="password">Adgangskode</label>
+      <div class="input-wrap">
+        <input class="form-input" id="password" type="password" placeholder="Indtast adgangskode" autocomplete="current-password" required style="padding-right:2.4rem">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <button type="button" class="toggle-pw" onclick="togglePassword()" aria-label="Vis adgangskode">
+          <svg id="eyeIcon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="extras">
+      <label class="remember">
+        <input type="checkbox" id="rememberMe">
+        Husk mig
+      </label>
+      <a href="#" class="forgot">Glemt adgangskode?</a>
+    </div>
+
+    <button type="submit" class="btn-primary" id="submitBtn">
+      <span class="spinner"></span>
+      <span class="btn-text">Log ind</span>
+    </button>
+  </form>
+
+  <div class="divider"><span>eller</span></div>
+
+  <div class="sso-grid">
+    <button class="btn-sso" onclick="handleSSO('nemlogin')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#0f766e" stroke-width="1.8">
+        <rect x="3" y="4" width="18" height="16" rx="2"/>
+        <path d="M8 12h8M12 8v8" stroke-linecap="round"/>
+      </svg>
+      NemLog-in
+    </button>
+    <button class="btn-sso" onclick="handleSSO('sso')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="1.8">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 3a15.3 15.3 0 014 9 15.3 15.3 0 01-4 9 15.3 15.3 0 01-4-9 15.3 15.3 0 014-9z"/>
+        <path d="M3 12h18" stroke-linecap="round"/>
+      </svg>
+      SSO
+    </button>
+  </div>
+
+  <div class="test-hint">
+    <div class="test-creds" id="testCreds">
+      <table>
+        <thead>
+          <tr><th>Brugernavn</th><th>Adgangskode</th><th>Rolle</th></tr>
+        </thead>
+        <tbody>
+          <tr onclick="fillTest('kunde','Q4')"><td>kunde</td><td>Q4</td><td>Kunde</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button type="button" class="test-toggle" onclick="toggleTestCreds()">
+      Testbrugere
+      <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+
+  <div class="card-footer">
+    <p>Ny bruger? <a href="#">Opret konto</a></p>
+  </div>
+
+</div>
+
+<div class="bottom-text">
+  &copy; 2026 DK Energy Compliance &middot; AI-drevet rådgiver for dansk og EU energiregulering
+</div>
+
+<script>
+function togglePassword() {
+  const pw = document.getElementById('password');
+  const icon = document.getElementById('eyeIcon');
+  if (pw.type === 'password') {
+    pw.type = 'text';
+    icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  } else {
+    pw.type = 'password';
+    icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>';
+  }
+}
+
+function toggleTestCreds() {
+  document.getElementById('testCreds').classList.toggle('open');
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const error = document.getElementById('error');
+  error.classList.remove('show');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  const TEST_USERS = {
+    'kunde': { password: 'Q4', name: 'Kunde', role: 'Kunde' }
+  };
+
+  setTimeout(() => {
+    btn.classList.remove('loading');
+    btn.disabled = false;
+
+    const email = document.getElementById('email').value.toLowerCase().trim();
+    const pw    = document.getElementById('password').value;
+    const user  = TEST_USERS[email];
+
+    if (user && user.password === pw) {
+      sessionStorage.setItem('deUser', JSON.stringify({ email, name: user.name, role: user.role }));
+      window.location.href = 'landing.html';
+    } else {
+      document.getElementById('errorText').textContent =
+        TEST_USERS[email]
+          ? 'Forkert adgangskode — prøv igen'
+          : 'Ukendt brugernavn — brug en testbruger (se nedenfor)';
+      error.classList.add('show');
+    }
+  }, 1500);
+}
+
+function handleSSO(provider) {
+  const label = provider === 'nemlogin' ? 'NemLog-in' : 'SSO';
+  alert(label + ' integration er ikke konfigureret endnu.\nKontakt din administrator for opsætning.');
+}
+
+function fillTest(email, pw) {
+  document.getElementById('email').value = email;
+  document.getElementById('password').value = pw;
+  document.getElementById('error').classList.remove('show');
+  document.getElementById('submitBtn').focus();
+}
+
+document.getElementById('email').focus();
+</script>
+</body>
+</html>

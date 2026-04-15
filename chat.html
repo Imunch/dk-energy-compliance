@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DK Energy Compliance — AI Rådgiver</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ━━━ RESET & TOKENS ━━━ */
+:root {
+  --bg: #f8f9fb;
+  --bg-wash: #f3f4f6;
+  --surface: #ffffff;
+  --surface-hover: #fafbfc;
+  --surface-pressed: #f3f4f6;
+  --border: #e2e4e9;
+  --border-strong: #d1d5db;
+  --border-subtle: #eef0f2;
+
+  --teal: #0f766e;
+  --teal-bg: #f0fdfa;
+  --teal-ring: #99f6e4;
+  --teal-text: #115e59;
+
+  --indigo: #4338ca;
+  --indigo-bg: #eef2ff;
+  --indigo-ring: #c7d2fe;
+  --indigo-text: #3730a3;
+
+  --green: #15803d;
+  --green-bg: #f0fdf4;
+  --green-ring: #86efac;
+  --green-text: #166534;
+
+  --amber: #b45309;
+  --amber-bg: #fffbeb;
+  --amber-ring: #fde68a;
+  --amber-text: #92400e;
+
+  --emerald: #047857;
+  --emerald-bg: #ecfdf5;
+  --emerald-ring: #a7f3d0;
+  --emerald-text: #065f46;
+
+  --rose: #be123c;
+  --rose-bg: #fff1f2;
+  --rose-ring: #fecdd3;
+  --rose-text: #9f1239;
+
+  --violet: #6d28d9;
+  --violet-bg: #f5f3ff;
+  --violet-ring: #ddd6fe;
+  --violet-text: #5b21b6;
+
+  --red: #b91c1c;
+  --orange: #c2410c;
+
+  --text: #0f172a;
+  --text2: #334155;
+  --text3: #64748b;
+  --text4: #94a3b8;
+  --text5: #cbd5e1;
+
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+  --r-sm: 6px;
+  --r: 8px;
+  --r-md: 10px;
+  --r-lg: 12px;
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.05);
+  --shadow: 0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.07);
+  --shadow-ring: 0 0 0 2px var(--accent-ring);
+  --t: .14s ease;
+
+  --accent: var(--teal);
+  --accent-bg: var(--teal-bg);
+  --accent-ring: var(--teal-ring);
+  --accent-text: var(--teal-text);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size: 14.5px; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: 'cv01','cv02','cv11';
+}
+
+/* ━━━ HEADER ━━━ */
+header {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .55rem 1rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0; z-index: 20;
+}
+.logo {
+  width: 28px; height: 28px; border-radius: var(--r);
+  display: grid; place-items: center;
+  font-weight: 800; font-size: 11px; color: #fff;
+  flex-shrink: 0;
+}
+header h1 { font-size: .85rem; font-weight: 700; letter-spacing: -.03em; }
+.h-status {
+  margin-left: auto;
+  display: flex; align-items: center; gap: .3rem;
+  font-size: .6rem; font-weight: 600; color: var(--accent-text);
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-ring);
+  padding: 2px 8px 2px 6px;
+  border-radius: 4px;
+}
+.h-status .dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--accent);
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* ━━━ TABS ━━━ */
+.tabs {
+  display: flex; gap: 1px; padding: 0;
+  background: var(--border);
+  flex-shrink: 0;
+}
+.tab {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: .4rem;
+  padding: .5rem .6rem;
+  background: var(--surface);
+  border: none; cursor: pointer;
+  font: 600 .75rem/1 var(--sans);
+  color: var(--text4);
+  transition: all var(--t);
+  position: relative;
+}
+.tab:hover { background: var(--surface-hover); color: var(--text3); }
+.tab.active {
+  color: var(--accent-text);
+  background: var(--accent-bg);
+}
+.tab.active::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px; background: var(--accent);
+}
+.tab-icon {
+  width: 20px; height: 20px; border-radius: 5px;
+  display: grid; place-items: center;
+  font-size: 9px; font-weight: 800; color: #fff;
+  flex-shrink: 0;
+}
+.tab-sub { font-weight: 400; color: var(--text4); display: none; }
+@media(min-width:700px) { .tab-sub { display: inline; margin-left: .15rem; font-size: .65rem; } }
+
+/* ━━━ LAYOUT ━━━ */
+.layout { display: flex; flex: 1; overflow: hidden; flex-direction: column; }
+
+/* ━━━ RESET BTN (inside chat) ━━━ */
+.reset-bar {
+  display: flex; justify-content: center;
+  padding: .25rem 0 .5rem;
+}
+.reset-btn {
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .3rem .65rem;
+  background: none; border: 1px solid var(--border);
+  border-radius: var(--r);
+  font: 500 .62rem/1 var(--sans);
+  color: var(--text4);
+  cursor: pointer;
+  transition: all var(--t);
+}
+.reset-btn:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent-ring);
+  color: var(--accent-text);
+}
+.reset-btn svg { width: 11px; height: 11px; stroke: currentColor; fill: none; }
+
+/* ━━━ CHAT COL ━━━ */
+.chat-col { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+
+.msgs {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 1.25rem 2rem .75rem;
+  scroll-behavior: smooth;
+  display: flex; flex-direction: column;
+}
+.msgs.centered { justify-content: center; }
+.msgs::-webkit-scrollbar { width: 4px; }
+.msgs::-webkit-scrollbar-thumb { background: var(--text5); border-radius: 2px; }
+
+/* ━━━ WELCOME ━━━ */
+.welcome {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 1.5rem 1rem 0; text-align: center;
+}
+.w-icon {
+  width: 52px; height: 52px; border-radius: var(--r-lg);
+  display: grid; place-items: center;
+  font-size: 22px; font-weight: 800; color: #fff;
+  margin-bottom: .75rem;
+  box-shadow: var(--shadow-md);
+}
+.w-title {
+  font-size: 1.25rem; font-weight: 800;
+  letter-spacing: -.04em; margin-bottom: .15rem;
+}
+.w-desc {
+  font-size: .82rem; color: var(--text3);
+  max-width: 420px; line-height: 1.55;
+  margin-bottom: .5rem;
+}
+.w-feats {
+  text-align: left;
+  max-width: 420px; width: 100%;
+  margin-bottom: .6rem;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.w-feat {
+  display: flex; align-items: baseline; gap: .4rem;
+  font-size: .73rem; color: var(--text2);
+  line-height: 1.4;
+  padding: .15rem 0;
+}
+.w-feat::before {
+  content: '';
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+  margin-top: .35em;
+}
+.w-skill-link {
+  display: inline-flex; align-items: center; gap: .3rem;
+  margin-top: .25rem; margin-bottom: .35rem;
+  font-size: .65rem; font-weight: 600;
+  color: var(--accent-text);
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-ring);
+  transition: all var(--t);
+  cursor: pointer;
+}
+.w-skill-link:hover {
+  background: var(--accent-ring);
+}
+.w-skill-link svg { width: 11px; height: 11px; stroke: currentColor; fill: none; }
+
+/* ━━━ SKILL MODAL ━━━ */
+.skill-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.35);
+  z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  animation: fadeIn .15s ease-out;
+}
+.skill-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+  width: 90%; max-width: 560px;
+  max-height: 80vh;
+  display: flex; flex-direction: column;
+  animation: fadeUp .2s ease-out;
+}
+.skill-modal-head {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.skill-modal-icon {
+  width: 26px; height: 26px; border-radius: 6px;
+  display: grid; place-items: center;
+  font-size: 10px; font-weight: 800; color: #fff;
+}
+.skill-modal-title { font-size: .85rem; font-weight: 700; flex: 1; }
+.skill-modal-close {
+  width: 26px; height: 26px; border-radius: 6px;
+  border: 1px solid var(--border); background: none;
+  color: var(--text3); cursor: pointer;
+  display: grid; place-items: center;
+  font-size: .75rem; transition: all var(--t);
+}
+.skill-modal-close:hover { background: var(--bg-wash); color: var(--text); }
+.skill-modal-body {
+  padding: 1rem;
+  overflow-y: auto;
+  font-size: .8rem; line-height: 1.6;
+  color: var(--text2);
+}
+.skill-modal-body h4 {
+  font-size: .68rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .05em;
+  color: var(--accent-text);
+  margin: .8rem 0 .3rem;
+  padding-bottom: .2rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.skill-modal-body h4:first-child { margin-top: 0; }
+.skill-modal-body ul { padding-left: 1.1rem; margin: .25rem 0; }
+.skill-modal-body li { margin-bottom: .2rem; }
+.skill-modal-body table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  border: 1px solid var(--border); border-radius: var(--r);
+  overflow: hidden; margin: .4rem 0; font-size: .75rem;
+}
+.skill-modal-body th {
+  text-align: left; padding: .3rem .55rem;
+  background: var(--bg-wash); font-size: .6rem;
+  font-weight: 800; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--text4);
+  border-bottom: 1px solid var(--border);
+}
+.skill-modal-body td {
+  padding: .25rem .55rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.skill-modal-body tr:last-child td { border-bottom: none; }
+.skill-modal-body code {
+  background: var(--bg-wash); padding: 0 4px;
+  border-radius: 3px; font-size: .72rem;
+  font-family: var(--mono);
+}
+
+/* ━━━ CAPABILITY TAGS (clickable) ━━━ */
+.w-tags {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 4px;
+  margin-bottom: .35rem; max-width: 500px;
+}
+.w-tag {
+  padding: 3px 10px; border-radius: 4px;
+  background: var(--bg-wash);
+  border: 1px solid var(--border);
+  color: var(--text3);
+  font-size: .67rem; font-weight: 600;
+  cursor: pointer;
+  transition: all var(--t);
+  user-select: none;
+  letter-spacing: -.01em;
+}
+.w-tag:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent-ring);
+  color: var(--accent-text);
+}
+.w-tag.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: var(--shadow-xs);
+}
+.tag-hint {
+  font-size: .6rem; color: var(--text4);
+  margin-top: .3rem; margin-bottom: 0;
+}
+
+/* ━━━ INLINE QUICK PROMPTS (inside welcome) ━━━ */
+.qp-heading {
+  font-size: .6rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--text4);
+  margin-top: .7rem; margin-bottom: .3rem;
+  width: 100%; max-width: 600px;
+  text-align: left;
+}
+.qp-inline {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 5px; width: 100%; max-width: 600px;
+}
+
+/* ━━━ CONTEXT CHIPS (above input) ━━━ */
+.ctx-bar {
+  display: flex; flex-wrap: wrap; gap: 3px;
+  padding: 0 2rem .35rem;
+  max-width: 820px; margin: 0 auto;
+  align-items: center;
+}
+.ctx-bar:empty { display: none; }
+.ctx-label {
+  font-size: .58rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+  color: var(--text4); margin-right: 2px;
+}
+.ctx-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 7px; border-radius: 4px;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-ring);
+  color: var(--accent-text);
+  font-size: .6rem; font-weight: 600;
+  cursor: pointer;
+  transition: all var(--t);
+}
+.ctx-chip:hover { background: var(--accent-ring); }
+.ctx-chip .x {
+  font-size: .55rem; opacity: .5; margin-left: 1px;
+  font-weight: 800;
+}
+.ctx-chip:hover .x { opacity: 1; }
+
+/* ━━━ QUICK PROMPTS ━━━ */
+.qp-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 5px; padding: 0 2rem;
+  max-width: 700px; width: 100%;
+  margin: 0 auto .5rem;
+}
+.qp {
+  padding: .55rem .8rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-size: .76rem; font-weight: 500;
+  color: var(--text3);
+  cursor: pointer; text-align: left;
+  transition: all var(--t);
+  line-height: 1.35;
+}
+.qp:hover {
+  border-color: var(--accent-ring);
+  background: var(--accent-bg);
+  color: var(--accent-text);
+  box-shadow: var(--shadow-xs);
+}
+
+/* ━━━ MESSAGES ━━━ */
+.m {
+  display: flex; gap: .6rem;
+  margin-bottom: 1.35rem;
+  max-width: 760px; margin: 0 auto;
+  animation: fadeUp .2s ease-out;
+}
+@keyframes fadeUp { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
+
+.m-av {
+  width: 26px; height: 26px; border-radius: 6px;
+  display: grid; place-items: center;
+  font-size: 10px; font-weight: 800; color: #fff;
+  flex-shrink: 0; margin-top: 1px;
+}
+.m-body { flex: 1; min-width: 0; }
+.m-who {
+  font-size: .58rem; font-weight: 700;
+  color: var(--text4); margin-bottom: 3px;
+  text-transform: uppercase; letter-spacing: .07em;
+}
+
+/* context shown in message */
+.m-ctx {
+  display: flex; flex-wrap: wrap; gap: 3px;
+  margin-bottom: 5px;
+}
+.m-ctx-chip {
+  padding: 1px 6px; border-radius: 3px;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-ring);
+  font-size: .57rem; font-weight: 600;
+  color: var(--accent-text);
+}
+
+/* user msg */
+.m.u .m-av { background: var(--bg-wash); color: var(--text3); border: 1px solid var(--border); }
+.m.u .m-text {
+  font-size: .87rem; line-height: 1.55; color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: .6rem .9rem;
+}
+
+/* assistant msg */
+.m.a .m-text {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: .85rem 1rem;
+  font-size: .84rem; line-height: 1.65;
+  box-shadow: var(--shadow-xs);
+}
+.m.a .m-text p { margin-bottom: .5rem; }
+.m.a .m-text p:last-child { margin-bottom: 0; }
+.m.a .m-text strong { font-weight: 600; color: var(--text); }
+.m.a .m-text em { color: var(--text3); }
+.m.a .m-text code {
+  background: var(--bg-wash); padding: 1px 5px;
+  border-radius: 3px; font: 84%/1.4 var(--mono);
+  color: var(--accent-text); border: 1px solid var(--border-subtle);
+}
+.m.a .m-text pre {
+  background: #0f172a; color: #e2e8f0;
+  padding: .7rem .9rem; border-radius: var(--r);
+  overflow-x: auto; margin: .55rem 0;
+  font: 80%/1.55 var(--mono);
+}
+.m.a .m-text h3 {
+  font-size: .7rem; font-weight: 800; color: var(--accent-text);
+  margin: .9rem 0 .3rem; padding-bottom: .25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.m.a .m-text table {
+  width: 100%; border-collapse: separate; border-spacing: 0;
+  margin: .55rem 0; font-size: .78rem;
+  border: 1px solid var(--border); border-radius: var(--r);
+  overflow: hidden;
+}
+.m.a .m-text thead th {
+  text-align: left; padding: .35rem .65rem;
+  background: var(--bg-wash);
+  font-size: .6rem; font-weight: 800; color: var(--text4);
+  text-transform: uppercase; letter-spacing: .06em;
+  border-bottom: 1px solid var(--border);
+}
+.m.a .m-text thead th:not(:last-child) { border-right: 1px solid var(--border-subtle); }
+.m.a .m-text td { padding: .3rem .65rem; border-bottom: 1px solid var(--border-subtle); }
+.m.a .m-text td:not(:last-child) { border-right: 1px solid var(--border-subtle); }
+.m.a .m-text tr:last-child td { border-bottom: none; }
+.m.a .m-text tr:hover td { background: var(--surface-hover); }
+.m.a .m-text ul, .m.a .m-text ol { padding-left: 1.2rem; margin: .4rem 0; }
+.m.a .m-text li { margin-bottom: .25rem; color: var(--text2); }
+.m.a .m-text li strong { color: var(--text); }
+
+.law {
+  display: inline-block;
+  padding: 0 6px; border-radius: 3px;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-ring);
+  color: var(--accent-text);
+  font-weight: 700; font-size: .72rem;
+  white-space: nowrap;
+}
+.risk {
+  display: inline-block; padding: 1px 8px;
+  border-radius: 3px; font-size: .65rem; font-weight: 700;
+}
+.risk-l { background: var(--emerald-bg); color: var(--emerald); border: 1px solid var(--emerald-ring); }
+.risk-m { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-ring); }
+.risk-h { background: #fff7ed; color: var(--orange); border: 1px solid #fed7aa; }
+.risk-c { background: #fef2f2; color: var(--red); border: 1px solid #fecaca; }
+
+/* typing */
+.dots { display: flex; gap: 4px; padding: 8px 0; }
+.dots span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); animation: dot 1.1s infinite;
+}
+.dots span:nth-child(2) { animation-delay:.13s; }
+.dots span:nth-child(3) { animation-delay:.26s; }
+@keyframes dot { 0%,80%,100%{opacity:.15;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+
+/* ━━━ INPUT ━━━ */
+.input-wrap {
+  padding: .3rem 1.25rem .65rem;
+  background: var(--bg);
+  flex-shrink: 0;
+}
+.input-box {
+  max-width: 780px; margin: 0 auto;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 6px;
+  display: flex;
+  box-shadow: var(--shadow);
+  transition: border-color var(--t), box-shadow var(--t);
+}
+.input-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-ring), var(--shadow);
+}
+.input-box textarea {
+  flex: 1; border: none; background: none; color: var(--text);
+  font: 400 1.15rem/1.5 var(--sans);
+  resize: none; outline: none;
+  min-height: 52px; max-height: 150px;
+  padding: 12px 16px;
+}
+.input-box textarea::placeholder { color: var(--text4); font-size: 1.15rem; }
+.send {
+  width: 46px; height: 46px; border-radius: var(--r-lg);
+  border: none; background: var(--accent); color: #fff;
+  cursor: pointer; display: grid; place-items: center;
+  flex-shrink: 0; align-self: flex-end;
+  transition: all var(--t);
+}
+.send:hover { filter: brightness(1.1); }
+.send:active { transform: scale(.95); }
+.send:disabled { opacity: .25; cursor: default; transform: none; }
+.send svg { width: 18px; height: 18px; }
+.input-foot { font-size: .57rem; color: var(--text4); margin-top: .3rem; text-align: center; letter-spacing: .01em; max-width: 780px; margin-left: auto; margin-right: auto; }
+
+/* ━━━ AGENT THEMES ━━━ */
+body.agent-n { --accent:var(--teal);   --accent-bg:var(--teal-bg);   --accent-ring:var(--teal-ring);   --accent-text:var(--teal-text); }
+body.agent-m { --accent:var(--indigo); --accent-bg:var(--indigo-bg); --accent-ring:var(--indigo-ring); --accent-text:var(--indigo-text); }
+body.agent-e { --accent:var(--green);  --accent-bg:var(--green-bg);  --accent-ring:var(--green-ring);  --accent-text:var(--green-text); }
+body.agent-c { --accent:var(--rose);   --accent-bg:var(--rose-bg);   --accent-ring:var(--rose-ring);   --accent-text:var(--rose-text); }
+body.agent-g { --accent:var(--amber);  --accent-bg:var(--amber-bg);  --accent-ring:var(--amber-ring);  --accent-text:var(--amber-text); }
+body.agent-o { --accent:var(--violet); --accent-bg:var(--violet-bg); --accent-ring:var(--violet-ring); --accent-text:var(--violet-text); }
+
+/* ━━━ RESPONSIVE ━━━ */
+@media(max-width:600px) {
+  .qp-grid { grid-template-columns: 1fr; }
+  .msgs { padding: .75rem; }
+  .w-title { font-size: 1.1rem; }
+  .tabs { gap: 0; }
+}
+</style>
+</head>
+<body class="agent-n">
+
+<header>
+  <div class="logo" id="hlogo" style="background:linear-gradient(135deg,#0f766e,#14b8a6)">DK·E</div>
+  <h1>DK Energy Compliance</h1>
+  <div class="h-status"><span class="dot"></span>Online</div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-a="n" onclick="sw('n')">
+    <span class="tab-icon" style="background:linear-gradient(135deg,#0f766e,#14b8a6)">N</span>
+    <span>Netdrift</span>
+    <span class="tab-sub">SOGL & grid code</span>
+  </button>
+  <button class="tab" data-a="m" onclick="sw('m')">
+    <span class="tab-icon" style="background:linear-gradient(135deg,#4338ca,#6366f1)">M</span>
+    <span>Marked</span>
+    <span class="tab-sub">REMIT & engros</span>
+  </button>
+  <button class="tab" data-a="e" onclick="sw('e')">
+    <span class="tab-icon" style="background:linear-gradient(135deg,#15803d,#22c55e)">E</span>
+    <span>Miljø</span>
+    <span class="tab-sub">VE, ETS & VVM</span>
+  </button>
+  <button class="tab" data-a="c" onclick="sw('c')">
+    <span class="tab-icon" style="background:linear-gradient(135deg,#be123c,#f43f5e)">C</span>
+    <span>Cyber</span>
+    <span class="tab-sub">NIS2 & NC Cyber</span>
+  </button>
+  <button class="tab" data-a="g" onclick="sw('g')">
+    <span class="tab-icon" style="background:linear-gradient(135deg,#b45309,#f59e0b)">G</span>
+    <span>Gas &amp; Brint</span>
+    <span class="tab-sub">RFNBO & PtX</span>
+  </button>
+  <button class="tab" data-a="o" onclick="sw('o')">
+    <span class="tab-icon" style="background:linear-gradient(135deg,#6d28d9,#8b5cf6)">Ø</span>
+    <span>Økonomi</span>
+    <span class="tab-sub">Tariffer & CSRD</span>
+  </button>
+</nav>
+
+<div class="layout">
+  <div class="chat-col">
+    <div class="msgs" id="msgs"></div>
+    <div class="qp-grid" id="qp"></div>
+    <div class="ctx-bar" id="ctx"></div>
+    <div class="input-wrap">
+      <div class="input-box">
+        <textarea id="inp" placeholder="Stil et spørgsmål..." rows="1"
+          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();go()}"
+          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,150)+'px'"></textarea>
+        <button class="send" id="btn" onclick="go()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+      <div class="input-foot">Enter = send · Shift+Enter = ny linje · Klik tags for kontekst</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ━━━ DATA ━━━ */
+const A = {
+n: {
+  name:'Netdrift', icon:'N', grad:'linear-gradient(135deg,#0f766e,#14b8a6)',
+  desc:'AI-assistent til TSO-/DSO-netkompliance efter SOGL, NC RfG og dansk elforsyningsret.',
+  skillPath:'netdrift/SKILL.md',
+  feats:['Fortolk SOGL-forordningens fem hovedområder','Dimensionér FCR-N/FCR-D, aFRR og mFRR for DK1/DK2','Klassificér produktionsanlæg A–D efter NC RfG','Vurdér N-1-sikkerhed og HVDC-driftsregler','Find krav i Elforsyningsloven og Netregler'],
+  caps:['SOGL','Frekvensreserver','N-1','NC RfG','HVDC','Nettilslutning','Balancering','Elforsyningsloven'],
+  tagKw:{
+    'SOGL':['sogl','system operation','2017/1485','hovedomrader'],
+    'Frekvensreserver':['fcr','afrr','mfrr','reserver','frekvens','lfc','picasso','mari'],
+    'N-1':['n-1','sikkerhed','kontingens','forsyningssikker'],
+    'NC RfG':['nc rfg','rfg','2016/631','type a','type b','type c','type d','produktionsanlaeg'],
+    'HVDC':['hvdc','nc hvdc','skagerrak','kontek','storebalt','cobracable','viking link','kriegers flak'],
+    'Nettilslutning':['nettilslut','tilslutning','tf','teknisk forskrift'],
+    'Balancering':['balance','brp','bsp','imbalance','afregn','1-timesplan'],
+    'Elforsyningsloven':['elforsyningsloven','ef-loven','bekendtgor','netregler']
+  },
+  qp:[
+    {t:'SOGL hovedområder',q:'Hvad er de fem hovedområder i SOGL-forordningen?'},
+    {t:'Frekvensreserver DK',q:'Hvor store FCR-, aFRR- og mFRR-reserver skal Energinet holde i DK1 og DK2?'},
+    {t:'NC RfG type B',q:'Hvornår skal et vindkraftanlæg klassificeres som type B efter NC RfG?'},
+    {t:'N-1 kriterium',q:'Hvordan anvender Energinet N-1-kriteriet ved planlægning af transmission?'},
+    {t:'HVDC-forbindelser',q:'Hvilke HVDC-forbindelser har Danmark og hvilke driftsregler gælder?'},
+    {t:'Balanceansvar',q:'Hvad er forskellen på BRP og BSP i det danske balancemarked?'}
+  ],
+},
+m: {
+  name:'Marked', icon:'M', grad:'linear-gradient(135deg,#4338ca,#6366f1)',
+  desc:'Compliance for engrosenergimarkedet — REMIT II, CACM og Nord Pool-handel.',
+  skillPath:'marked/SKILL.md',
+  feats:['Registrér markedsdeltagere efter REMIT II-artikel 9','Identificér spoofing, wash trades og cross-market manipulation','Håndter inside information og UMM-offentliggørelse','Forstå 15-min MTU, SDAC og SIDC efter CACM','Vurdér sanktionsrisiko — op til 15% af omsætning'],
+  caps:['REMIT II','Nord Pool','SDAC','SIDC','15-min MTU','Markedsmisbrug','UMM','Balanceansvar'],
+  tagKw:{
+    'REMIT II':['remit','2024/1106','1227/2011','markedsdeltager','artikel 9'],
+    'Nord Pool':['nord pool','nordpool','spot','nemo','elspot','elbas'],
+    'SDAC':['sdac','day-ahead','price coupling','euphemia','ntc','fb','flow-based'],
+    'SIDC':['sidc','intraday','xbid','cross-border intraday'],
+    '15-min MTU':['15-min','mtu','15 minutter','market time unit'],
+    'Markedsmisbrug':['manipulation','spoofing','wash','layering','insider','cross-market','misbrug'],
+    'UMM':['umm','urgent market message','inside information','offentliggor'],
+    'Balanceansvar':['brp','bsp','sa','balance responsible','settlement','imbalance']
+  },
+  qp:[
+    {t:'REMIT II sanktioner',q:'Hvad er de maksimale sanktioner under REMIT II og hvornår gælder de?'},
+    {t:'15-min MTU',q:'Hvornår træder 15-minutters MTU i kraft og hvad betyder det for Nord Pool?'},
+    {t:'Markedsmanipulation',q:'Hvilke former for markedsmanipulation forfølges oftest under REMIT?'},
+    {t:'UMM offentliggørelse',q:'Hvornår skal en producent offentliggøre en UMM og inside information?'},
+    {t:'BRP vs BSP',q:'Hvad er forskellen på Balance Responsible Party og Balance Service Provider?'},
+    {t:'NTC vs FB',q:'Hvad er forskellen på NTC- og Flow-Based-markedskobling i CACM?'}
+  ],
+},
+e: {
+  name:'Miljø', icon:'E', grad:'linear-gradient(135deg,#15803d,#22c55e)',
+  desc:'Klima-, miljø- og VE-udbygningsret for danske energianlæg.',
+  skillPath:'miljoe/SKILL.md',
+  feats:['Håndter EU ETS fase 4: 4,3%/år lineær reduktion','Udpeg RED III go-to zones for vedvarende energi','Beregn CBAM-rapportering for stål, cement, strøm m.m.','Gennemfør VVM-proces efter bilag 1/2 (Miljøvurderingsloven)','Dokumentér klimaloven 70%/2030 og 2045-neutralitet'],
+  caps:['EU ETS','CBAM','RED III','VVM','Klimaloven','Havvind','VE-loven','Miljøgodkendelse'],
+  tagKw:{
+    'EU ETS':['ets','kvoter','allowances','fase 4','msr','2003/87','co2-kvote'],
+    'CBAM':['cbam','carbon border','2023/956','grænsejustering'],
+    'RED III':['red iii','2023/2413','42,5%','go-to','vedvarende','vedvaren','artikel 15'],
+    'VVM':['vvm','miljøvurder','miljovurder','bilag 1','bilag 2','impact assessment'],
+    'Klimaloven':['klimaloven','klimaraadet','70%','2030','2045','lov 965'],
+    'Havvind':['havvind','offshore','statsudbud','open-door','open door','kriegers flak','thor'],
+    'VE-loven':['ve-loven','ve loven','vedvarende energi','køberetsordning','naboerstatning','garanti'],
+    'Miljøgodkendelse':['miljogodkend','miljøgodkend','kap. 5','mbl','miljøbeskyttelseslov']
+  },
+  qp:[
+    {t:'EU ETS fase 4',q:'Hvad er de vigtigste stramninger i EU ETS fase 4 (2021-2030)?'},
+    {t:'CBAM tidslinje',q:'Hvornår træder CBAM fuldt i kraft og hvilke produkter er omfattet?'},
+    {t:'RED III go-to zones',q:'Hvordan udpeges go-to zones efter RED III artikel 15c?'},
+    {t:'Havvind udbud',q:'Hvordan er den danske udbudsmodel for havvindmølleparker?'},
+    {t:'VVM-proces',q:'Gennemgå VVM-proces for en 200 MW landvindmøllepark efter bilag 1'},
+    {t:'Klimaloven 70%',q:'Hvordan fungerer 70%-målsætningen i klimaloven og årlig status?'}
+  ],
+},
+c: {
+  name:'Cyber', icon:'C', grad:'linear-gradient(135deg,#be123c,#f43f5e)',
+  desc:'Cyber- og informationssikkerhed efter NIS2, NC Cyber og CER-direktivet — fokus på TSO, DSO og kritisk infrastruktur.',
+  skillPath:'cyber/SKILL.md',
+  feats:['Klassificér virksomheden som væsentlig eller vigtig efter NIS2','Opfyld NC Cybers ECII/HII-kategorisering af aktiver','Håndter hændelsesrapportering inden for 24/72 timer','Styr leverandørkæde-risiko efter art. 21','Implementér IEC 62443 for OT/SCADA-miljøer'],
+  caps:['NIS2','NC Cyber','CER','Hændelsesrapportering','CCS','OT-sikkerhed','Leverandørkæde','IEC 62443'],
+  tagKw:{
+    'NIS2':['nis2','nis 2','2022/2555','vaesentlig','vigtig','cybersikkerhed'],
+    'NC Cyber':['nc cyber','2024/1366','ecii','hii','network code cyber'],
+    'CER':['cer','2022/2557','kritisk enhed','critical entities'],
+    'Hændelsesrapportering':['haendelse','incident','rapport','24 time','72 time'],
+    'CCS':['ccs','center for cybersikker','pet'],
+    'OT-sikkerhed':['ot','scada','ics','industri','operational tech'],
+    'Leverandørkæde':['leverandor','supply chain','tredjepart','ict'],
+    'IEC 62443':['iec 62443','62443','sl','security level']
+  },
+  qp:[
+    {t:'NIS2 klassifikation',q:'Er Energinet en væsentlig eller vigtig enhed efter NIS2?'},
+    {t:'NC Cyber ECII',q:'Hvordan kategoriseres aktiver som ECII efter NC Cybersecurity?'},
+    {t:'Hændelsesfrister',q:'Hvilke rapporteringsfrister gælder ved en cyberhændelse under NIS2?'},
+    {t:'Leverandørkæde',q:'Hvad kræver NIS2 art. 21 om leverandørkæde-sikkerhed?'},
+    {t:'OT vs IT',q:'Hvordan adskiller sikkerhedskrav sig for OT og IT-systemer?'},
+    {t:'Sanktioner NIS2',q:'Hvad er sanktionsniveauet for overtrædelse af NIS2?'}
+  ],
+},
+g: {
+  name:'Gas & Brint', icon:'G', grad:'linear-gradient(135deg,#b45309,#f59e0b)',
+  desc:'Gas-TSO-rollen, brintpakken (2024) og RFNBO — regulering af gas, brint og PtX på tværs af EU og Danmark.',
+  skillPath:'gas/SKILL.md',
+  feats:['Forstå brint- og dekarboniseret gas-pakken (2024)','Vurdér RFNBO-krav for grøn brint (additionality, tidsmatch, geografi)','Håndter danske PtX-udbud (500 MW puljer 2023-24)','Sikre gaskvalitet og CO2-transport','Opfyld forsyningssikkerhed efter gasforsyningsforordningen'],
+  caps:['Brintpakken','RFNBO','PtX-udbud','Gas SOGL','Gaskvalitet','Forsyningssikkerhed','CO2-transport','Biogas'],
+  tagKw:{
+    'Brintpakken':['brint','hydrogen','pakken','dekarboniseret','1789/2024','1787/2024'],
+    'RFNBO':['rfnbo','1184','1185','additionality','tidsmatch','geografi','gron brint'],
+    'PtX-udbud':['ptx','power-to-x','500 mw','pulje','udbud','elektrolyse'],
+    'Gas SOGL':['gas sogl','459/2017','gas balancering'],
+    'Gaskvalitet':['gaskval','wobbe','methane','biometh'],
+    'Forsyningssikkerhed':['forsyningssikker','gas forsyning','2017/1938'],
+    'CO2-transport':['co2 transport','ccs','co2-kabel','rorled','ccus'],
+    'Biogas':['biogas','biometh','gron gas','opgrad']
+  },
+  qp:[
+    {t:'Brintpakken overblik',q:'Hvad er kernen i EU\'s brint- og dekarboniseret gas-pakke fra 2024?'},
+    {t:'RFNBO-krav',q:'Hvad skal være opfyldt for at brint kvalificerer som RFNBO?'},
+    {t:'Dansk PtX-udbud',q:'Hvordan er det danske 500 MW PtX-udbud struktureret?'},
+    {t:'Gaskvalitetskrav',q:'Hvilke gaskvalitetskrav gælder for tilslutning til det danske gasnet?'},
+    {t:'Biogas opgradering',q:'Hvilke krav gælder for opgradering og indfødning af biogas?'},
+    {t:'CO2-infrastruktur',q:'Hvad siger den nye regulering om CO2-transportnet?'}
+  ],
+},
+o: {
+  name:'Økonomi', icon:'Ø', grad:'linear-gradient(135deg,#6d28d9,#8b5cf6)',
+  desc:'Økonomisk regulering af Energinet og netselskaber — indtægtsrammer, tariffer, statsstøtte, CSRD/ESRS og forsyningsvirksomheds-udbud.',
+  skillPath:'okonomi/SKILL.md',
+  feats:['Forstå indtægtsrammemodellen og WACC-fastsættelse','Designe tariffer efter § 73 og omkostningsægthedsprincippet','Håndter statsstøttenotifikation (CEEAG, GBER, CfD)','Implementér CSRD/ESRS dobbelt væsentlighedsanalyse','Gennemfør EU-udbud efter Forsyningsvirksomhedsdirektivet'],
+  caps:['Indtægtsrammer','Tariffer','Statsstøtte','CSRD','ESRS','EU-udbud','TEN-E','WACC'],
+  tagKw:{
+    'Indtægtsrammer':['indtaegtsramme','intaegt','wacc','regulering','forsyningstilsyn'],
+    'Tariffer':['tarif','§ 73','73','omkostningsaeg','tso-tarif','network tarif'],
+    'Statsstøtte':['statsst','state aid','ceeag','gber','cfd notif','2014/25'],
+    'CSRD':['csrd','2022/2464','baeredygtig','corporate sustain'],
+    'ESRS':['esrs','dobbelt vaesent','sustainability report','e1','s1','g1'],
+    'EU-udbud':['eu-udbud','forsynings direktiv','2014/25','udbud'],
+    'TEN-E':['ten-e','2022/869','pci','projects of common'],
+    'WACC':['wacc','kapitalfork','afkast','fst metodev']
+  },
+  qp:[
+    {t:'Indtægtsrammer 2024',q:'Hvordan fastsætter Forsyningstilsynet indtægtsrammer for TSO og DSO?'},
+    {t:'Tarifstruktur',q:'Hvilke principper styrer tarifstrukturen i det danske transmissionsnet?'},
+    {t:'CfD-notifikation',q:'Hvornår skal en havvind-CfD statsstøtte-notificeres til Kommissionen?'},
+    {t:'CSRD-rapport',q:'Hvornår skal Energinet rapportere efter CSRD og hvilke ESRS-standarder?'},
+    {t:'Forsyningsudbud',q:'Hvilke tærskler og processer gælder under Forsyningsvirksomhedsdirektivet?'},
+    {t:'TEN-E PCI',q:'Hvordan opnås PCI-status og hvad giver det af fordele?'}
+  ],
+}
+};
+
+/* ━━━ STATE ━━━ */
+let cur = 'n';
+let hist = {n:[],m:[],e:[],c:[],g:[],o:[]};
+let busy = false;
+let selectedTags = {n:new Set(), m:new Set(), e:new Set(), c:new Set(), g:new Set(), o:new Set()};
+
+/* ━━━ TAG TOGGLE ━━━ */
+function toggleTag(tag) {
+  const s = selectedTags[cur];
+  if (s.has(tag)) s.delete(tag); else s.add(tag);
+  renderTags();
+  renderCtx();
+}
+function removeTag(tag) {
+  selectedTags[cur].delete(tag);
+  renderTags();
+  renderCtx();
+}
+
+function renderTags() {
+  document.querySelectorAll('.w-tag').forEach(el => {
+    el.classList.toggle('selected', selectedTags[cur].has(el.dataset.tag));
+  });
+}
+
+function renderCtx() {
+  const bar = document.getElementById('ctx');
+  const tags = [...selectedTags[cur]];
+  if (!tags.length) { bar.innerHTML = ''; return; }
+  bar.innerHTML = `<span class="ctx-label">Kontekst:</span>` +
+    tags.map(t => `<span class="ctx-chip" onclick="removeTag('${t.replace(/'/g,"\\'")}')">${t}<span class="x">✕</span></span>`).join('');
+}
+
+/* ━━━ SWITCH AGENT ━━━ */
+function sw(id) {
+  cur = id;
+  document.body.className = 'agent-' + id;
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.a === id));
+  renderChat();
+  renderCtx();
+}
+
+/* ━━━ START FORFRA ━━━ */
+function startForfra() {
+  hist[cur] = [];
+  selectedTags[cur] = new Set();
+  renderChat();
+  renderCtx();
+  document.getElementById('inp').focus();
+}
+
+/* ━━━ RENDER CHAT ━━━ */
+function renderChat() {
+  const a = A[cur], h = hist[cur];
+  const el = document.getElementById('msgs');
+  const qp = document.getElementById('qp');
+
+  if (!h.length) {
+    el.classList.add('centered');
+    const qpHtml = `<div class="qp-heading">Prøv et eksempel</div><div class="qp-inline">${a.qp.map(p => `<div class="qp" onclick="ask('${p.q.replace(/'/g,"\\'")}')">${p.t}</div>`).join('')}</div>`;
+    const featsHtml = a.feats ? `<div class="w-feats">${a.feats.map(f=>`<div class="w-feat">${f}</div>`).join('')}</div>` : '';
+    const skillSvg = `<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`;
+    const skillLink = a.skillPath ? `<span class="w-skill-link" onclick="showSkill('${cur}')">${skillSvg}Se fuld skill-dokumentation</span>` : '';
+    el.innerHTML = `<div class="welcome">
+      <div class="w-icon" style="background:${a.grad}">${a.icon}</div>
+      <div class="w-title">${a.name}</div>
+      <div class="w-desc">${a.desc}</div>
+      ${featsHtml}
+      ${skillLink}
+      <div class="w-tags">${a.caps.map(c=>`<span class="w-tag${selectedTags[cur].has(c)?' selected':''}" data-tag="${c}" onclick="toggleTag('${c.replace(/'/g,"\\'")}')">${c}</span>`).join('')}</div>
+      <div class="tag-hint">Klik tags for at tilføje kontekst til dine spørgsmål</div>
+      ${qpHtml}
+    </div>`;
+    qp.style.display = 'none';
+  } else {
+    el.classList.remove('centered');
+    const resetSvg = `<svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`;
+    el.innerHTML = `<div class="reset-bar"><button class="reset-btn" onclick="startForfra()">${resetSvg}Start forfra</button></div>` +
+    h.map(m => {
+      let ctxHtml = '';
+      if (m.r === 'u' && m.tags && m.tags.length) {
+        ctxHtml = `<div class="m-ctx">${m.tags.map(t=>`<span class="m-ctx-chip">${t}</span>`).join('')}</div>`;
+      }
+      if (m.r === 'u') return `<div class="m u"><div class="m-av">J</div><div class="m-body"><div class="m-who">Jesper</div>${ctxHtml}<div class="m-text">${esc(m.t)}</div></div></div>`;
+      return `<div class="m a"><div class="m-av" style="background:${a.grad}">${a.icon}</div><div class="m-body"><div class="m-who" style="color:var(--accent-text)">${a.name}</div><div class="m-text">${m.h}</div></div></div>`;
+    }).join('');
+    qp.style.display = 'none';
+    el.scrollTop = el.scrollHeight;
+  }
+}
+
+/* ━━━ SEND ━━━ */
+function ask(q) { document.getElementById('inp').value = q; go(); }
+
+async function go() {
+  const box = document.getElementById('inp');
+  const q = box.value.trim();
+  if (!q || busy) return;
+  busy = true; box.value = ''; box.style.height = 'auto';
+  document.getElementById('btn').disabled = true;
+
+  const tags = [...selectedTags[cur]];
+
+  hist[cur].push({r:'u', t:q, tags:tags});
+  renderChat();
+
+  const a = A[cur], el = document.getElementById('msgs');
+  const tmp = document.createElement('div');
+  tmp.className = 'm a';
+  tmp.innerHTML = `<div class="m-av" style="background:${a.grad}">${a.icon}</div><div class="m-body"><div class="m-who" style="color:var(--accent-text)">${a.name}</div><div class="m-text"><div class="dots"><span></span><span></span><span></span></div></div></div>`;
+  el.appendChild(tmp); el.scrollTop = el.scrollHeight;
+
+  await new Promise(r => setTimeout(r, 600 + Math.random()*800));
+  tmp.remove();
+
+  let augQ = q.toLowerCase();
+  const tkw = A[cur].tagKw || {};
+  for (const tag of tags) {
+    if (tkw[tag]) augQ += ' ' + tkw[tag].join(' ');
+  }
+
+  hist[cur].push({r:'a', h:gen(augQ, q, tags)});
+  renderChat();
+  busy = false;
+  document.getElementById('btn').disabled = false;
+}
+
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmt(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
+
+function extractNum(q) {
+  let m = q.match(/([\d.,]+)\s*(mio|mill|mw|gw|m\b|dkk|kr)/i);
+  if (m) { let n = parseFloat(m[1].replace(/\./g,'').replace(',','.')); if(/mio|mill|m\b/i.test(m[2])) n*=1e6; if(/gw/i.test(m[2])) n*=1000; return Math.round(n); }
+  m = q.match(/([\d.]+[.,]?\d*)/);
+  if (m) { let n = parseFloat(m[1].replace(/\./g,'').replace(',','.')); if(n>10) return Math.round(n); }
+  return null;
+}
+
+function match(q, kw) { return kw.some(k => q.includes(k)); }
+
+/* ━━━ RESPONSE ENGINE ━━━ */
+function gen(q, raw, tags) {
+  if (cur==='n') return genN(q,raw,tags);
+  if (cur==='m') return genM(q,raw,tags);
+  if (cur==='e') return genE(q,raw,tags);
+  if (cur==='c') return genC(q,raw,tags);
+  if (cur==='g') return genG(q,raw,tags);
+  return genO(q,raw,tags);
+}
+
+function ctxNote(tags) {
+  if (!tags||!tags.length) return '';
+  return `<p style="font-size:.72rem;color:var(--text4);margin-bottom:.6rem">Kontekst: ${tags.map(t=>`<span style="background:var(--accent-bg);border:1px solid var(--accent-ring);color:var(--accent-text);padding:0 5px;border-radius:3px;font-weight:600;font-size:.65rem">${t}</span>`).join(' ')}</p>`;
+}
+
+/* ━━━ NETDRIFT ENGINE ━━━ */
+function genN(q, raw, tags) {
+  let ctx = ctxNote(tags);
+
+  if (match(q,['sogl','system operation','2017/1485','hovedomrad'])) {
+    let h = ctx+`<h3>SOGL — fem hovedområder</h3><p>Kommissionens forordning <span class="law">(EU) 2017/1485</span> om systemdrift, implementeret af Energinet som dansk TSO.</p>`;
+    h += `<table><thead><tr><th>#</th><th>Hovedområde</th><th>Artikler</th></tr></thead><tbody>`;
+    h += `<tr><td>1</td><td>Driftssikkerhed</td><td>Art. 18-41</td></tr>`;
+    h += `<tr><td>2</td><td>Driftsplanlægning</td><td>Art. 42-113</td></tr>`;
+    h += `<tr><td>3</td><td>Last-frekvensregulering og reserver</td><td>Art. 118-189</td></tr>`;
+    h += `<tr><td>4</td><td>Driftstilstande og TSO-koordinering</td><td>Art. 18-25, 141</td></tr>`;
+    h += `<tr><td>5</td><td>Data og informationsudveksling</td><td>Art. 40-53</td></tr></tbody></table>`;
+    h += `<h3>Driftstilstande</h3><ul><li><strong>Normal</strong> — N-1 opfyldt, frekvens i bånd</li><li><strong>Alert</strong> — N-1 ikke sikret, afhjælpning planlagt</li><li><strong>Emergency</strong> — grænser overskredet, akutte indgreb</li><li><strong>Blackout</strong> — spændingstab i område</li><li><strong>Restoration</strong> — genoprettelse efter NC ER</li></ul>`;
+    return h;
+  }
+
+  if (match(q,['fcr','afrr','mfrr','reserver','frekvens','lfc','picasso','mari','balancer'])) {
+    let h = ctx+`<h3>Frekvensreserver i DK1/DK2</h3><p>Dimensioneret efter SOGL art. 153-164 og Nordic/CE synkronområder. DK1 = Vestdanmark (CE-synk), DK2 = Sjælland (Nordic-synk).</p>`;
+    h += `<table><thead><tr><th>Reservetype</th><th>Responstid</th><th>DK1 (CE)</th><th>DK2 (Nordic)</th><th>Platform</th></tr></thead><tbody>`;
+    h += `<tr><td>FCR-N (normal)</td><td>0-30 s</td><td>— (CE fælles)</td><td>±23 MW</td><td>Nordic FCR-N</td></tr>`;
+    h += `<tr><td>FCR-D (disturbance)</td><td>0-30 s</td><td>~27 MW</td><td>opad/nedad</td><td>Nordic FCR-D / CE FCR</td></tr>`;
+    h += `<tr><td>aFRR</td><td>30 s - 5 min</td><td>ca. ±100 MW</td><td>ca. ±90 MW</td><td><span class="law">PICASSO</span></td></tr>`;
+    h += `<tr><td>mFRR</td><td>5-15 min</td><td>dimensioneret N-1</td><td>dimensioneret N-1</td><td><span class="law">MARI</span></td></tr>`;
+    h += `<tr><td>RR (replacement)</td><td>15-30 min</td><td>— (DK ej tilsluttet)</td><td>—</td><td>TERRE</td></tr></tbody></table>`;
+    h += `<h3>Dimensionering</h3><p>mFRR dimensioneres efter største enkeltfejl (N-1) — typisk største HVDC-kabelblok eller produktionsenhed. Skagerrak 4 (700 MW) og Viking Link (1.400 MW) er dimensionsgivende for DK1.</p>`;
+    h += `<p><span class="law">SOGL art. 157</span> · <span class="law">EBGL 2017/2195</span></p>`;
+    return h;
+  }
+
+  if (match(q,['n-1','sikkerhed','kontingens','forsyningssikker'])) {
+    let h = ctx+`<h3>N-1-kriteriet</h3><p>Systemet skal forblive i stabil drift ved fejl i én vilkårlig komponent — transformer, kabel, luftledning, HVDC-polpar eller produktionsenhed.</p>`;
+    h += `<h3>Anvendelse ved Energinet</h3><ul><li><strong>Planlægning:</strong> transmissionsnettet dimensioneres så alle N-1-fejl i normaldrift holdes inden for termiske og spændingsmæssige grænser</li><li><strong>Drift:</strong> systemet kontrolleres kontinuerligt mod N-1; ved overtrædelse aktiveres afhjælpning (counter-trade, redispatch, topology switching)</li><li><strong>Undtagelse:</strong> N-1 kan midlertidigt fraviges i Alert state jf. SOGL art. 35</li></ul>`;
+    h += `<h3>Operationel sikkerhedsanalyse</h3><pre>1. Indlæs snapshot (SCADA/EMS)\n2. Kør kontingensliste (AC/DC load flow)\n3. For hver fejl: tjek overbelastninger, U-grænser, stabilitet\n4. Ved brud: foreslå remedial actions\n5. Koordinér med nabo-TSO'er (CSA/RSC)</pre>`;
+    h += `<p><span class="law">SOGL art. 33</span> · <span class="law">Netreglerne TF 3.2.5</span></p>`;
+    return h;
+  }
+
+  if (match(q,['nc rfg','rfg','2016/631','type a','type b','type c','type d','produktionsanlaeg'])) {
+    let h = ctx+`<h3>NC RfG — Type A-D klassifikation</h3><p>Kommissionens forordning <span class="law">(EU) 2016/631</span> om nettilslutning af produktionsanlæg. Implementeret i DK af Energinets tekniske forskrifter (TF 3.2.x).</p>`;
+    h += `<table><thead><tr><th>Type</th><th>Effektgrænse</th><th>Spænding</th><th>Krav</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>A</strong></td><td>0,8 kW - 1,5 MW</td><td>Alle</td><td>Grundlæggende (frekvens, P/U)</td></tr>`;
+    h += `<tr><td><strong>B</strong></td><td>1,5 - 50 MW</td><td>Alle</td><td>+ FRT, styring, fjernbetjening</td></tr>`;
+    h += `<tr><td><strong>C</strong></td><td>50 - 75 MW</td><td>Alle</td><td>+ reguleringsreserver, LFSM-O/U</td></tr>`;
+    h += `<tr><td><strong>D</strong></td><td>≥ 75 MW ELLER ≥ 110 kV</td><td>Transmission</td><td>+ fuld black-start, syntetisk inerti</td></tr></tbody></table>`;
+    let n = extractNum(q);
+    if (n) {
+      let type = n>=75e6?'D':(n>=50e6?'C':(n>=1.5e6?'B':'A'));
+      h += `<h3>Din klassifikation</h3><p>Anlæg på <strong>${fmt(Math.round(n/1000))} kW</strong> → <strong>Type ${type}</strong>.</p>`;
+    }
+    h += `<h3>LFSM (Limited Frequency Sensitive Mode)</h3><ul><li><strong>LFSM-O</strong> (over): obligatorisk >50,2 Hz — P-reduktion</li><li><strong>LFSM-U</strong> (under): obligatorisk <49,8 Hz — P-opreg (kun C/D)</li><li><strong>FSM</strong>: normal drift inden for dødbånd</li></ul>`;
+    h += `<p><span class="law">NC RfG art. 5</span> · <span class="law">TF 3.2.5 / 3.2.3</span></p>`;
+    return h;
+  }
+
+  if (match(q,['hvdc','nc hvdc','skagerrak','kontek','storebalt','cobracable','viking link','kriegers flak'])) {
+    let h = ctx+`<h3>Danske HVDC-forbindelser</h3>`;
+    h += `<table><thead><tr><th>Forbindelse</th><th>Fra/Til</th><th>Kapacitet</th><th>Teknologi</th><th>Idrift</th></tr></thead><tbody>`;
+    h += `<tr><td>Skagerrak 1-4</td><td>DK1-Norge</td><td>1.700 MW</td><td>LCC+VSC</td><td>1977/1993/2014</td></tr>`;
+    h += `<tr><td>Konti-Skan 1-2</td><td>DK1-Sverige</td><td>740 MW</td><td>LCC</td><td>1965/1988</td></tr>`;
+    h += `<tr><td>Storebælt</td><td>DK1-DK2</td><td>600 MW</td><td>LCC</td><td>2010</td></tr>`;
+    h += `<tr><td>Kontek</td><td>DK2-Tyskland</td><td>600 MW</td><td>LCC</td><td>1995</td></tr>`;
+    h += `<tr><td>Kriegers Flak CGS</td><td>DK2-Tyskland</td><td>400 MW</td><td>VSC</td><td>2020</td></tr>`;
+    h += `<tr><td>COBRAcable</td><td>DK1-NL</td><td>700 MW</td><td>VSC</td><td>2019</td></tr>`;
+    h += `<tr><td>Viking Link</td><td>DK1-UK</td><td>1.400 MW</td><td>VSC</td><td>2023</td></tr></tbody></table>`;
+    h += `<h3>NC HVDC — tekniske krav</h3><ul><li><strong>Art. 11-14:</strong> P-frekvenskarakteristik, LFSM</li><li><strong>Art. 18-25:</strong> spændingsstabilitet, reaktiv kapacitet</li><li><strong>Art. 29-41:</strong> fault-ride-through, blok-til-blok-dynamik</li><li><strong>Art. 51-58:</strong> kommunikation og data-udveksling</li></ul>`;
+    h += `<p><span class="law">NC HVDC (EU) 2016/1447</span> · <span class="law">TF 3.2.6</span></p>`;
+    return h;
+  }
+
+  if (match(q,['nettilslut','tilslutning','tf','teknisk forskrift'])) {
+    let h = ctx+`<h3>Nettilslutning i Danmark</h3><p>Governance: Elforsyningsloven → Netreglerne → Tekniske Forskrifter (TF) → anlægsaftale.</p>`;
+    h += `<table><thead><tr><th>Forskrift</th><th>Emne</th></tr></thead><tbody>`;
+    h += `<tr><td>TF 3.2.1</td><td>Batterianlæg</td></tr>`;
+    h += `<tr><td>TF 3.2.2</td><td>Termiske anlæg > 11 kW</td></tr>`;
+    h += `<tr><td>TF 3.2.3</td><td>Solcelleanlæg</td></tr>`;
+    h += `<tr><td>TF 3.2.5</td><td>Vindkraftanlæg > 11 kW</td></tr>`;
+    h += `<tr><td>TF 3.2.6</td><td>HVDC-forbindelser</td></tr>`;
+    h += `<tr><td>TF 3.3.1</td><td>Forbrugsanlæg (DCC)</td></tr></tbody></table>`;
+    h += `<h3>Proces</h3><ol><li>Forespørgsel → Energinet/DSO tilslutningssvar</li><li>Nettilslutningsaftale</li><li>Teknisk accept — komponenttest, model-validering</li><li>Idriftsættelse — conformance-test, FCR/FRT-verifikation</li><li>Driftstilladelse</li></ol>`;
+    h += `<p><span class="law">NC RfG art. 29-33</span> · <span class="law">Bek. 1128/2017</span></p>`;
+    return h;
+  }
+
+  if (match(q,['brp','bsp','balance','imbalance','afregn','1-timesplan','balanceansvar'])) {
+    let h = ctx+`<h3>Balanceansvar — BRP og BSP</h3>`;
+    h += `<table><thead><tr><th>Rolle</th><th>Beskrivelse</th><th>Regulering</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>BRP</strong> (Balance Responsible Party)</td><td>Finansielt ansvar for balancen i sin portefølje — forbrug og produktion mod planer</td><td>EBGL art. 18</td></tr>`;
+    h += `<tr><td><strong>BSP</strong> (Balance Service Provider)</td><td>Leverer balanceringsydelser (FCR/aFRR/mFRR) til TSO</td><td>EBGL art. 25</td></tr>`;
+    h += `<tr><td><strong>SA</strong> (Scheduling Agent)</td><td>Udarbejder og indsender fysiske planer på BRP's vegne</td><td>—</td></tr></tbody></table>`;
+    h += `<h3>Imbalance pricing</h3><p>Dansk balanceafregning: <strong>single pricing</strong> — samme pris for under/overskud, lig med marginal aktiveringspris i regulerkraftmarkedet. 15-min afregningsperiode (MTU) fra 2025.</p>`;
+    h += `<p><span class="law">EBGL 2017/2195 art. 52-55</span> · <span class="law">Bek. 1273/2018</span></p>`;
+    return h;
+  }
+
+  if (match(q,['elforsyningsloven','ef-loven','netregler','bekendtgor'])) {
+    let h = ctx+`<h3>Elforsyningsloven — TSO-pligter</h3>`;
+    h += `<table><thead><tr><th>§</th><th>Emne</th></tr></thead><tbody>`;
+    h += `<tr><td>§ 2</td><td>Formål: forsyningssikkerhed, klima, konkurrence</td></tr>`;
+    h += `<tr><td>§ 5</td><td>Definitioner (TSO, DSO, systemansvar)</td></tr>`;
+    h += `<tr><td>§§ 20-22</td><td>Netvirksomhedens pligter</td></tr>`;
+    h += `<tr><td>§§ 27-31a</td><td>Systemansvar (Energinet)</td></tr>`;
+    h += `<tr><td>§§ 56-59</td><td>Priser og vilkår, tariffer</td></tr>`;
+    h += `<tr><td>§§ 73-89</td><td>Tilsyn (Forsyningstilsynet)</td></tr></tbody></table>`;
+    h += `<h3>Netreglerne</h3><p>Energinets bindende regelsæt udstedt efter § 26 stk. 3 — de tekniske, operationelle og kommercielle regler for brug af transmissionsnettet og balanceringsmarkedet.</p>`;
+    h += `<p><span class="law">LBK 1193/2023</span> · Godkendt af Forsyningstilsynet</p>`;
+    return h;
+  }
+
+  return ctx+`<h3>Fakta</h3><p>${esc(raw)}</p><h3>Analyse</h3><p>For et præcist svar har jeg brug for:</p><ul><li>Anlægstype (producent/forbrug/HVDC/batteri)?</li><li>Synkronområde (DK1 CE / DK2 Nordic)?</li><li>Effekt og spændingsniveau?</li></ul><p>Prøv: <strong>SOGL</strong>, <strong>frekvensreserver</strong>, <strong>N-1</strong>, <strong>NC RfG</strong>, <strong>HVDC</strong>, <strong>nettilslutning</strong>, <strong>balanceansvar</strong> eller <strong>elforsyningsloven</strong>.</p>`;
+}
+
+/* ━━━ MARKED ENGINE ━━━ */
+function genM(q, raw, tags) {
+  let ctx = ctxNote(tags);
+
+  if (match(q,['remit','2024/1106','1227/2011','markedsdeltager','artikel 9','sanktion'])) {
+    let h = ctx+`<h3>REMIT II — (EU) 2024/1106</h3><p>Revision af REMIT (1227/2011) vedtaget i maj 2024. Styrker ACER's kompetencer og hæver sanktionsniveauet markant.</p>`;
+    h += `<table><thead><tr><th>Emne</th><th>REMIT I</th><th>REMIT II</th></tr></thead><tbody>`;
+    h += `<tr><td>Maks. bøde (juridisk)</td><td>Nationalt bestemt</td><td><strong>15% af omsætning</strong> eller 15 mio. EUR</td></tr>`;
+    h += `<tr><td>Maks. bøde (fysisk)</td><td>—</td><td>5 mio. EUR</td></tr>`;
+    h += `<tr><td>ACER direkte tilsyn</td><td>Nej</td><td>Ja (grænseoverskridende)</td></tr>`;
+    h += `<tr><td>Algoritmisk handel</td><td>Ikke reguleret</td><td>Notifikationspligt + kill-switch</td></tr>`;
+    h += `<tr><td>LNG/VE-certifikater</td><td>Begrænset</td><td>Fuld dækning</td></tr></tbody></table>`;
+    h += `<h3>Kerne-forbud (art. 3-5)</h3><ul><li><strong>Insiderhandel</strong> — art. 3</li><li><strong>Markedsmanipulation</strong> — art. 5</li><li><strong>Pligt til UMM</strong> — art. 4 (inside information offentliggøres snarest)</li><li><strong>Registreringspligt</strong> — art. 9 (markedsdeltager registreres hos nationalt regulatormyndighed = Forsyningstilsynet)</li></ul>`;
+    h += `<p><span class="law">REMIT II (EU) 2024/1106</span> · <span class="law">ACER REMIT Guidance 6th ed.</span></p>`;
+    return h;
+  }
+
+  if (match(q,['15-min','mtu','15 minutter','market time unit'])) {
+    let h = ctx+`<h3>15-minutters MTU</h3><p>Efter CACM-forordningen (2015/1222 art. 53) skal Market Time Unit for imbalance settlement reduceres til 15 minutter.</p>`;
+    h += `<table><thead><tr><th>Komponent</th><th>Før</th><th>Efter</th><th>Dato</th></tr></thead><tbody>`;
+    h += `<tr><td>Imbalance settlement</td><td>1 time (60 min)</td><td>15 min</td><td>Nordic: maj 2023</td></tr>`;
+    h += `<tr><td>Intraday (SIDC/XBID)</td><td>60/30 min</td><td>15 min</td><td>SDAC: 2025</td></tr>`;
+    h += `<tr><td>Day-ahead (SDAC)</td><td>60 min</td><td>15 min</td><td>EUPHEMIA: 2025-26</td></tr>`;
+    h += `<tr><td>Balancering (MARI/PICASSO)</td><td>varierer</td><td>15 min / 4 s aFRR</td><td>tilsluttet</td></tr></tbody></table>`;
+    h += `<h3>Konsekvenser for aktører</h3><ul><li>Portefølje-optimering skal håndtere 96 MTU/dag i stedet for 24</li><li>Budgivning i intraday kan ske på enkelt 15-min blokke</li><li>Fleksibilitet (batterier, elbiler) får værdifuld kortere granularitet</li><li>SCADA/ETRM-systemer skal opdateres til 15-min scheduling</li></ul>`;
+    h += `<p><span class="law">CACM art. 53</span> · <span class="law">EBGL art. 6</span></p>`;
+    return h;
+  }
+
+  if (match(q,['manipulation','spoofing','wash','layering','misbrug','cross-market','insider'])) {
+    let h = ctx+`<h3>Markedsmanipulation under REMIT</h3>`;
+    h += `<p style="font-size:.72rem;color:var(--text3);margin-bottom:.5rem">Typologi baseret på ACER's offentlige REMIT Quarterly Reports og nationale regulatorers afgørelser. For konkrete sagsreferencer: slå op i ACER's enforcement-oversigt eller Forsyningstilsynets afgørelser — specifikke sager bør verificeres i primærkilde før citering.</p>`;
+    h += `<table><thead><tr><th>Type</th><th>Beskrivelse</th><th>Typisk indikator</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>Spoofing</strong></td><td>Læg store ordrer uden intention om udførelse — annulleres ved prisflytning</td><td>Høj ordre-til-handel-ratio; annullering &lt; 100 ms før match</td></tr>`;
+    h += `<tr><td><strong>Wash trades</strong></td><td>Handel med sig selv via tredjepart — falskt volumen uden reelt ejerskifte</td><td>Beslægtede modparter; netto-nul positioner</td></tr>`;
+    h += `<tr><td><strong>Layering</strong></td><td>Flere ordrer i "lag" på tætte prisniveauer for at skabe falsk markedsdybde</td><td>Stribe af ordrer der annulleres samtidig</td></tr>`;
+    h += `<tr><td><strong>Cross-market</strong></td><td>Manipulér spotmarked for at vinde på derivater (eller omvendt)</td><td>Korreleret adfærd i fysisk og finansielt segment</td></tr>`;
+    h += `<tr><td><strong>Physical withholding</strong></td><td>Tilbagehold produktions- eller importkapacitet for at drive pris op</td><td>Tilgængelighed afviger fra fundamentaler uden UMM</td></tr>`;
+    h += `<tr><td><strong>Transmission manipulation</strong></td><td>Køb transmissionskapacitet uden at bruge den — eller omvendt</td><td>Nominerings-mønstre uden handelsdækning</td></tr></tbody></table>`;
+    h += `<h3>Indikatorer TSO/regulator overvåger</h3><ul><li>Ordre-til-handel-ratio (OTR) > 50% i kort vindue</li><li>Prisafvigelse fra fundamentaler uden UMM</li><li>Gentaget annullering inden for 100 ms før match</li><li>Koordineret adfærd mellem beslægtede enheder</li></ul>`;
+    h += `<p><span class="law">REMIT II art. 5</span> · <span class="law">ACER 2023 REMIT Quarterly Report</span></p>`;
+    return h;
+  }
+
+  if (match(q,['umm','urgent market message','inside information','offentliggor'])) {
+    let h = ctx+`<h3>UMM og inside information</h3><p>Inside information er "ikke-offentlig, præcis information der, hvis offentlig, ville påvirke engrosenergipriser mærkbart".</p>`;
+    h += `<h3>Offentliggørelsespligt (art. 4)</h3><ul><li><strong>Snarest muligt</strong> — i praksis inden for minutter for drifts­hændelser</li><li><strong>Hele markedet samtidigt</strong> — via platforme som Nord Pool UMM eller Entsoe Transparency</li><li><strong>Udsættelse</strong> kun ved legitime interesser og ingen vildledning</li></ul>`;
+    h += `<h3>Eksempler inside info</h3><table><thead><tr><th>Kategori</th><th>Eksempel</th></tr></thead><tbody>`;
+    h += `<tr><td>Produktion</td><td>Uplanlagt udfald > 100 MW > 60 min</td></tr>`;
+    h += `<tr><td>Transmission</td><td>HVDC-fejl, reduceret kapacitet</td></tr>`;
+    h += `<tr><td>Forbrug</td><td>Større industriforbrug offline</td></tr>`;
+    h += `<tr><td>Brændsel</td><td>Lagerniveauer, gasforsyning</td></tr>`;
+    h += `<tr><td>Planlagt</td><td>Revisioner, service — skal varsles på forhånd</td></tr></tbody></table>`;
+    h += `<p><span class="risk risk-h">Høj</span> Manglende UMM = markedsmanipulation efter art. 5.</p>`;
+    h += `<p><span class="law">REMIT II art. 4</span> · <span class="law">ACER Guidance on Inside Information</span></p>`;
+    return h;
+  }
+
+  if (match(q,['brp','bsp','sa','balance responsible','settlement','imbalance','balanceansvar'])) {
+    let h = ctx+`<h3>BRP vs BSP</h3>`;
+    h += `<table><thead><tr><th>Rolle</th><th>Fokus</th><th>Indtægt/omkostning</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>BRP</strong> — Balance Responsible Party</td><td>Finansielt ansvar for egen balance i 15-min MTU</td><td>Imbalance fee ved afvigelse</td></tr>`;
+    h += `<tr><td><strong>BSP</strong> — Balance Service Provider</td><td>Byder reserver ind til TSO (FCR/aFRR/mFRR)</td><td>Kapacitet + aktivering</td></tr>`;
+    h += `<tr><td><strong>SA</strong> — Scheduling Agent</td><td>Indsender fysiske planer (gate closure)</td><td>Serviceaftale</td></tr></tbody></table>`;
+    h += `<h3>Gate closure tidslinje (Nordic)</h3><pre>D-1 12:00  Day-ahead gate closure (SDAC)\nD-1 12:42  SDAC resultater\nD-1 14:00  Intraday opens (SIDC)\nD   t-60   Balance plan til Energinet\nD   t-25   XBID gate closure for 15-min MTU\nD   t      Realtid — aFRR/mFRR aktivering\nD+1        Imbalance settlement</pre>`;
+    h += `<p><span class="law">EBGL 2017/2195</span> · <span class="law">Bek. 1273/2018 om balancemarkedet</span></p>`;
+    return h;
+  }
+
+  if (match(q,['ntc','fb','flow-based','kapacitet','sdac','day-ahead','coupling','euphemia'])) {
+    let h = ctx+`<h3>NTC vs Flow-Based</h3>`;
+    h += `<table><thead><tr><th>Metode</th><th>Princip</th><th>Anvendelse</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>NTC</strong> (Net Transfer Capacity)</td><td>Fast kapacitet per budzonegrænse</td><td>Nordic + DK</td></tr>`;
+    h += `<tr><td><strong>Flow-Based</strong></td><td>Kapacitet beregnet dynamisk fra CNEC'er (critical network elements)</td><td>Core, Italy North, Nordic (planlagt 2025-26)</td></tr></tbody></table>`;
+    h += `<h3>Nordic FB-rollout</h3><ul><li>NRA'erne (ACER + national) godkendte Nordic CCM i 2020</li><li>External parallel runs 2022-23</li><li>Go-live: forskudt til 2025-26</li><li>Forventet effekt: mere kapacitet, højere social welfare, men øget volatilitet i budzoner</li></ul>`;
+    h += `<h3>EUPHEMIA</h3><p>Fælles SDAC-algoritme der matcher bud/udbud på tværs af 27+ budzoner. Optimerer social welfare under kapacitetsbegrænsninger. Kører dagligt 12:42 UTC.</p>`;
+    h += `<p><span class="law">CACM art. 20-21</span> · <span class="law">ACER decision 02/2020 Nordic CCM</span></p>`;
+    return h;
+  }
+
+  return ctx+`<h3>Fakta</h3><p>${esc(raw)}</p><h3>Analyse</h3><p>For et præcist svar har jeg brug for:</p><ul><li>Markedssegment (SDAC, SIDC, balancering, derivater)?</li><li>Aktørrolle (producent, trader, BRP, BSP)?</li><li>Budzone og MTU?</li></ul><p>Prøv: <strong>REMIT II</strong>, <strong>15-min MTU</strong>, <strong>markedsmanipulation</strong>, <strong>UMM</strong>, <strong>BRP/BSP</strong>, <strong>NTC vs FB</strong> eller <strong>Nord Pool</strong>.</p>`;
+}
+
+/* ━━━ MILJØ ENGINE ━━━ */
+function genE(q, raw, tags) {
+  let ctx = ctxNote(tags);
+
+  if (match(q,['ets','kvoter','allowances','fase 4','msr','2003/87','co2-kvote'])) {
+    let h = ctx+`<h3>EU ETS fase 4 (2021-2030)</h3><p>Direktiv <span class="law">2003/87/EC</span> ændret ved <span class="law">2023/959</span> ("Fit for 55"). Central europæisk kvotesystem for strøm, industri, intra-EU fly og (fra 2024) maritimt.</p>`;
+    h += `<table><thead><tr><th>Parameter</th><th>Fase 3 (2013-20)</th><th>Fase 4 (2021-30)</th></tr></thead><tbody>`;
+    h += `<tr><td>Lineær reduktionsfaktor (LRF)</td><td>1,74%/år</td><td><strong>4,3%/år</strong> (fra 2024)</td></tr>`;
+    h += `<tr><td>Mål 2030</td><td>— 43%</td><td><strong>— 62%</strong> vs. 2005</td></tr>`;
+    h += `<tr><td>Benchmarks</td><td>Statisk</td><td>Dynamisk opdatering</td></tr>`;
+    h += `<tr><td>Luftfart</td><td>Intra-EEA</td><td>+ CORSIA, gradvis fuld auktion</td></tr>`;
+    h += `<tr><td>Maritim (MRV)</td><td>—</td><td>Fra 2024 (fuld 2026)</td></tr>`;
+    h += `<tr><td>ETS2 (bygninger/transport)</td><td>—</td><td>Fra 2027</td></tr></tbody></table>`;
+    h += `<h3>Market Stability Reserve (MSR)</h3><p>Automatisk indgreb: hvis TNAC (Total Number of Allowances in Circulation) > 833 mio., trækkes 24% af overskuddet til MSR. Aktiv siden 2019 — halverer overudbud og stabiliserer kvotepris.</p>`;
+    h += `<p><span class="law">Direktiv (EU) 2023/959</span> · <span class="law">MSR-beslutning 2015/1814</span></p>`;
+    return h;
+  }
+
+  if (match(q,['cbam','carbon border','2023/956','grænsejustering','gransejust'])) {
+    let h = ctx+`<h3>CBAM tidslinje</h3><p>Carbon Border Adjustment Mechanism — <span class="law">(EU) 2023/956</span> — grænsetilpasningsmekanisme der udligner ETS-prisen for importerede varer med høj emissionsindhold.</p>`;
+    h += `<table><thead><tr><th>Periode</th><th>Status</th><th>Krav</th></tr></thead><tbody>`;
+    h += `<tr><td>Okt 2023 - dec 2025</td><td>Overgangsperiode</td><td>Kun rapportering (kvartalsvis)</td></tr>`;
+    h += `<tr><td><strong>1. jan 2026</strong></td><td><strong>Fuld ikrafttræden</strong></td><td>Køb af CBAM-certifikater</td></tr>`;
+    h += `<tr><td>2026-2034</td><td>Infas. med samt. udfas. gratiskvoter</td><td>Stigende andel</td></tr>`;
+    h += `<tr><td>2034</td><td>Fuldt udrullet</td><td>100% CBAM, 0% gratis</td></tr></tbody></table>`;
+    h += `<h3>Omfattede produkter</h3><ul><li><strong>Cement</strong> (HS 2507, 2523)</li><li><strong>Jern og stål</strong> (HS 72, 7301-7326)</li><li><strong>Aluminium</strong> (HS 76)</li><li><strong>Gødning</strong> (HS 2808, 2814, 31)</li><li><strong>Elektricitet</strong> (HS 2716) — relevant for Danmark ved import fra UK, ikke-ETS-lande</li><li><strong>Hydrogen</strong> (HS 2804)</li></ul>`;
+    h += `<h3>Beregning</h3><pre>Indlejret emission (tCO2e)\n× (ETS-pris - evt. indenlandsk CO2-pris)\n= CBAM-beløb\n→ købes som CBAM-certifikat</pre>`;
+    h += `<p><span class="law">Forordning (EU) 2023/956</span> · <span class="law">Impl. forordning 2023/1773</span></p>`;
+    return h;
+  }
+
+  if (match(q,['red iii','2023/2413','42,5%','go-to','vedvarende','vedvaren','artikel 15'])) {
+    let h = ctx+`<h3>RED III — (EU) 2023/2413</h3><p>Reviderede direktiv for vedvarende energi, vedtaget okt. 2023. Skal implementeres i DK senest <strong>1. juli 2024</strong> (go-to zones) og <strong>21. maj 2025</strong> (øvrige).</p>`;
+    h += `<table><thead><tr><th>Bindende mål 2030</th><th>Niveau</th></tr></thead><tbody>`;
+    h += `<tr><td>VE-andel i endelig energiforbrug</td><td><strong>42,5%</strong> (indikativt 45%)</td></tr>`;
+    h += `<tr><td>Transport</td><td>29% eller 14,5% GHG-reduktion</td></tr>`;
+    h += `<tr><td>Industri (ved energiforbrug)</td><td>+1,6%/år VE-stigning</td></tr>`;
+    h += `<tr><td>Bygninger</td><td>49% VE i opvarmning/køling</td></tr></tbody></table>`;
+    h += `<h3>Go-to zones (art. 15c)</h3><ul><li>Medlemsstater udpeger områder med <strong>særligt hurtig tilladelsesproces</strong> for VE</li><li><strong>Strategisk miljøvurdering (SEA)</strong> på zone-niveau — ikke projekt-niveau</li><li>Presumption of overriding public interest</li><li>Sagsbehandlingsfrist: <strong>12 måneder</strong> (land), <strong>24 måneder</strong> (offshore)</li><li>Udenfor zones: 24 / 36 måneder</li></ul>`;
+    h += `<p><span class="law">Direktiv (EU) 2023/2413 art. 15a-c</span> · <span class="law">VE-loven (DK impl. pending)</span></p>`;
+    return h;
+  }
+
+  if (match(q,['vvm','miljøvurder','miljovurder','bilag 1','bilag 2','impact assessment'])) {
+    let h = ctx+`<h3>VVM-proces i Danmark</h3><p>Miljøvurderingsloven (LBK 4/2023) implementerer VVM-direktivet <span class="law">2011/92/EU</span> som ændret ved 2014/52/EU.</p>`;
+    h += `<table><thead><tr><th>Bilag</th><th>Type</th><th>Krav</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>Bilag 1</strong></td><td>Obligatorisk VVM</td><td>Fuld miljøkonsekvensrapport</td></tr>`;
+    h += `<tr><td><strong>Bilag 2</strong></td><td>Screeningspligtig</td><td>Screening → ja/nej VVM</td></tr></tbody></table>`;
+    h += `<h3>Energi på bilag 1</h3><ul><li>Termisk kraftværk ≥ 300 MW</li><li>Kernekraft (alle)</li><li>Rørledninger ≥ 800 mm ø, ≥ 40 km</li><li>Vindmølleparker offshore (uanset størrelse)</li></ul>`;
+    h += `<h3>Typisk proces (landvind 200 MW)</h3><ol><li><strong>Idéoplæg</strong> + afgrænsning (scoping)</li><li><strong>Miljøkonsekvensrapport</strong> (MKR) — støj, skygge, natur, kulturarv, landskab</li><li><strong>Offentlig høring</strong> — min. 8 uger</li><li><strong>VVM-tilladelse</strong> fra myndighed (kommune/MST)</li><li><strong>Påklageproces</strong> — Miljø- og Fødevareklagenævnet, 4 uger</li><li><strong>Byggesag</strong> efter lokalplan</li></ol>`;
+    h += `<p>Samlet: <strong>2-4 år</strong> for onshore, <strong>4-8 år</strong> for havvind (uden klagesager).</p>`;
+    h += `<p><span class="law">LBK 4/2023</span> · <span class="law">VVM-direktivet 2011/92/EU</span></p>`;
+    return h;
+  }
+
+  if (match(q,['klimaloven','klimaraadet','70%','2030','2045','lov 965'])) {
+    let h = ctx+`<h3>Klimaloven (Lov nr. 965/2020)</h3>`;
+    h += `<table><thead><tr><th>Mål</th><th>Deadline</th><th>Basis</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>70% reduktion</strong></td><td>2030</td><td>vs. 1990</td></tr>`;
+    h += `<tr><td>Klimaneutralitet</td><td><strong>2045</strong></td><td>(fremrykket fra 2050)</td></tr>`;
+    h += `<tr><td>Negative emissioner</td><td>2050</td><td>—</td></tr></tbody></table>`;
+    h += `<h3>Governance</h3><ul><li><strong>Årligt klimaprogram</strong> — regeringen redegør for fremskridt (sept.)</li><li><strong>Klimaråd</strong> — uafhængig faglig vurdering årligt (feb.)</li><li><strong>Klimastatus</strong> — Energistyrelsen's fremskrivning</li><li>Hvis Klimarådet vurderer at målsætningen <strong>ikke er troværdig</strong>, skal ministeren fremlægge handleplan</li></ul>`;
+    h += `<h3>Relation til EU</h3><p>Danmark bidrager til EU's Fit for 55 — 55% reduktion 2030. ESR (non-ETS) mål for DK: <strong>-50%</strong> i 2030 vs. 2005. LULUCF: netsenke ≥ -5,6 Mt CO2e.</p>`;
+    h += `<p><span class="law">Lov 965/2020</span> · <span class="law">(EU) 2018/842 ESR</span> · <span class="law">(EU) 2018/841 LULUCF</span></p>`;
+    return h;
+  }
+
+  if (match(q,['havvind','offshore','statsudbud','open-door','open door','kriegers flak','thor'])) {
+    let h = ctx+`<h3>Dansk havvind-model</h3>`;
+    h += `<table><thead><tr><th>Model</th><th>Beskrivelse</th><th>Eksempler</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>Statsudbud</strong></td><td>Staten udpeger område, laver forundersøgelser, udbyder CfD/negativ budgivning</td><td>Horns Rev 3, Kriegers Flak, Thor</td></tr>`;
+    h += `<tr><td><strong>Open-door</strong></td><td>Udvikler ansøger for valgfrit område. Pausset 2023-24 pga EU-statsstøtteregler</td><td>Rødsand 2 i tidligere runder</td></tr>`;
+    h += `<tr><td><strong>Energiøer</strong></td><td>Kunstige øer som hub til flere havmølleparker, HVDC til flere lande</td><td>Nordsøen (ca. 3-10 GW), Bornholm</td></tr></tbody></table>`;
+    h += `<h3>Thor (2022 udbud)</h3><ul><li>1.000 MW ved Vestkysten</li><li>Tildelt til RWE — første negativ-bud i DK (28 mio. DKK/år koncessionsafgift)</li><li>Idriftsættelse: senest 2027</li><li>Prisprofil: markedspris (ingen CfD)</li></ul>`;
+    h += `<h3>Nordsøens Energiø</h3><p>Forbindelse DK1 ↔ 3 GW havvind ↔ mulig HVDC til BE/NL/UK. Tidsplan forsinket — idriftsættelse nu tidligst 2033.</p>`;
+    h += `<p><span class="law">VE-loven kap. 3</span> · <span class="law">Bek. om udbud havvind</span></p>`;
+    return h;
+  }
+
+  if (match(q,['ve-loven','ve loven','vedvarende energi','køberetsordning','naboerstatning','garanti'])) {
+    let h = ctx+`<h3>VE-loven</h3><p>Lov om fremme af vedvarende energi (LBK 1791/2023). Implementerer RED I/II og nationale støtteordninger.</p>`;
+    h += `<h3>Lokalt medejerskab</h3><ul><li><strong>Køberetsordning:</strong> lokale borgere har ret til at købe ≥ 20% af andele i vindmølleprojekter</li><li><strong>Værditabsordning:</strong> naboerstatning ved værditab på ejendomme pga. vindmøller</li><li><strong>Grøn pulje:</strong> kompensation til kommuner, 30.000-165.000 DKK/MW afhængig af teknologi</li><li><strong>VE-bonusordning:</strong> årlig bonus til naboer inden for fastsat afstand</li></ul>`;
+    h += `<h3>Støtteordninger</h3><table><thead><tr><th>Teknologi</th><th>Ordning</th><th>Status</th></tr></thead><tbody>`;
+    h += `<tr><td>Landvind / solceller</td><td>Pristillæg (udbud)</td><td>Teknologineutrale udbud</td></tr>`;
+    h += `<tr><td>Havvind</td><td>Udbud m/u CfD</td><td>Thor: ingen CfD</td></tr>`;
+    h += `<tr><td>Biogas</td><td>Tilskud</td><td>Udfases 2030</td></tr>`;
+    h += `<tr><td>PtX (brint)</td><td>Udbud 2023-24</td><td>500 MW puljer</td></tr></tbody></table>`;
+    h += `<p><span class="law">LBK 1791/2023</span> · <span class="law">Bek. om pristillæg</span></p>`;
+    return h;
+  }
+
+  if (match(q,['miljogodkend','miljøgodkend','kap. 5','mbl','miljøbeskyttelseslov','miljobeskyt'])) {
+    let h = ctx+`<h3>Miljøgodkendelse — MBL kap. 5</h3><p>Miljøbeskyttelseslovens kap. 5 (LBK 100/2022) § 33: listevirksomheder skal miljøgodkendes før etablering, ændring eller udvidelse.</p>`;
+    h += `<h3>Relevante liste-punkter for energi</h3><table><thead><tr><th>Listepunkt</th><th>Beskrivelse</th></tr></thead><tbody>`;
+    h += `<tr><td>1.1</td><td>Forbrændingsanlæg ≥ 50 MW</td></tr>`;
+    h += `<tr><td>1.4</td><td>Forgasning/flyd. brændstof ≥ 20 MW</td></tr>`;
+    h += `<tr><td>3.5</td><td>PtX-anlæg — elektrolysører over visse tærskler</td></tr>`;
+    h += `<tr><td>5.3</td><td>Affaldsbehandling</td></tr>`;
+    h += `<tr><td>6.7</td><td>Kemisk industri (ammoniak, metanol)</td></tr></tbody></table>`;
+    h += `<h3>Proces</h3><ol><li>Ansøgning → kommune (bilag 2) / MST (bilag 1)</li><li>BAT-vurdering (Best Available Techniques) efter BREF/BATC</li><li>Offentlig høring</li><li>Godkendelse med vilkår (emissionsgrænser, overvågning)</li><li>Revurdering min. hvert 10. år</li></ol>`;
+    h += `<p><span class="law">MBL kap. 5 § 33</span> · <span class="law">IED 2010/75/EU</span> · <span class="law">Godkendelsesbek. 1534/2023</span></p>`;
+    return h;
+  }
+
+  return ctx+`<h3>Fakta</h3><p>${esc(raw)}</p><h3>Analyse</h3><p>For et præcist svar har jeg brug for:</p><ul><li>Projekttype (landvind, havvind, sol, PtX, biogas, transmission)?</li><li>Effekt og placering (bilag 1/2)?</li><li>Relevant regelsæt (EU direktiv vs. dansk)?</li></ul><p>Prøv: <strong>EU ETS</strong>, <strong>CBAM</strong>, <strong>RED III</strong>, <strong>VVM</strong>, <strong>havvind</strong>, <strong>klimaloven</strong>, <strong>VE-loven</strong> eller <strong>miljøgodkendelse</strong>.</p>`;
+}
+
+/* ━━━ CYBER ENGINE ━━━ */
+function genC(q, raw, tags) {
+  let ctx = ctxNote(tags);
+
+  if (match(q,['nis2','nis 2','2022/2555','vaesentlig','vigtig','cybersikkerhed'])) {
+    let h = ctx+`<h3>NIS2-direktivet — (EU) 2022/2555</h3><p>Implementeret i DK ved Lov om foranstaltninger til sikring af et højt cybersikkerhedsniveau (ikrafttræden forskudt til <strong>1. juli 2025</strong>).</p>`;
+    h += `<table><thead><tr><th>Kategori</th><th>Krav</th><th>Eksempler energi</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>Væsentlig enhed</strong></td><td>Forudgående tilsyn, højere bødeloft</td><td>TSO, DSO > 100.000 kunder, engros-leverandører</td></tr>`;
+    h += `<tr><td><strong>Vigtig enhed</strong></td><td>Reaktivt tilsyn</td><td>Mindre DSO, aggregatorer, opladningsoperatører</td></tr></tbody></table>`;
+    h += `<h3>Energinet</h3><p>Som dansk TSO er Energinet entydigt <strong>væsentlig enhed</strong> efter bilag I, sektor: energi, undersektor: elektricitet og gas.</p>`;
+    h += `<h3>Art. 21 — risikostyring (10 minimumskrav)</h3><ol><li>Risikoanalyse og ISMS-politik</li><li>Hændelseshåndtering</li><li>Forretningskontinuitet (BCP/DRP)</li><li>Leverandørkæde-sikkerhed</li><li>Sikkerhed i systemudvikling og indkøb</li><li>Politikker og procedurer for sikkerhedsvurdering</li><li>Grundlæggende cyberhygiejne og træning</li><li>Kryptografi</li><li>HR-sikkerhed, adgangsstyring, aktivforvaltning</li><li>Multifaktor-autentificering og sikrede kommunikationsmidler</li></ol>`;
+    h += `<h3>Sanktioner (art. 34)</h3><p>Væsentlig enhed: <strong>op til 10 mio. EUR eller 2% af omsætning</strong>. Vigtig enhed: 7 mio. EUR eller 1,4%.</p>`;
+    h += `<p><span class="law">(EU) 2022/2555</span> · <span class="law">NIS2-lov (DK)</span></p>`;
+    return h;
+  }
+
+  if (match(q,['nc cyber','2024/1366','ecii','hii','network code cyber'])) {
+    let h = ctx+`<h3>NC Cybersecurity — (EU) 2024/1366</h3><p>Network Code on sector-specific rules for cybersecurity aspects of cross-border electricity flows. Vedtaget marts 2024, gælder fra 13. juni 2024 med trinvis implementering.</p>`;
+    h += `<h3>Aktiv-kategorisering</h3><table><thead><tr><th>Kategori</th><th>Betydning</th><th>Krav</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>HII</strong></td><td>High Impact Infrastructure</td><td>Fuld NC Cyber + NIS2</td></tr>`;
+    h += `<tr><td><strong>CII</strong></td><td>Critical Impact Infrastructure</td><td>Udvidede krav, fælles EU-baseline</td></tr>`;
+    h += `<tr><td><strong>ECII</strong></td><td>Electricity CII</td><td>Sektor-specifikke kontroller</td></tr></tbody></table>`;
+    h += `<h3>Centrale processer</h3><ul><li><strong>Cross-border electricity cybersecurity risk assessment (CECRA)</strong> — ENTSO-E/EU DSO koordineret</li><li><strong>Fælles EU-cybersecurity baseline</strong> vedtaget via ACER</li><li><strong>Supply chain assessment</strong> for HII/CII-leverandører</li><li><strong>Information sharing framework</strong> via CSIRTs og national ECS-CSIRT</li></ul>`;
+    h += `<p><span class="law">(EU) 2024/1366 art. 5-11</span></p>`;
+    return h;
+  }
+
+  if (match(q,['haendelse','incident','rapport','24 time','72 time'])) {
+    let h = ctx+`<h3>Hændelsesrapportering (NIS2 art. 23)</h3>`;
+    h += `<table><thead><tr><th>Frist</th><th>Krav</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>24 timer</strong></td><td>Tidlig varsel (early warning) — mistanke om ulovlig handling eller grænseoverskridende effekt</td></tr>`;
+    h += `<tr><td><strong>72 timer</strong></td><td>Hændelsesrapport — indledende vurdering, IoC'er, afbødning</td></tr>`;
+    h += `<tr><td><strong>1 måned</strong></td><td>Endelig rapport — rodårsagsanalyse, afhjælpning, lessons learned</td></tr>`;
+    h += `<tr><td>Ved igangværende</td><td>Fremskridtsrapport</td></tr></tbody></table>`;
+    h += `<h3>"Betydelig hændelse"-kriterier</h3><ul><li>Alvorlig driftsforstyrrelse eller finansielt tab for enheden</li><li>Påvirker eller kan påvirke andre fysiske/juridiske personer</li></ul>`;
+    h += `<h3>Rapporteringskanal (DK)</h3><p>Myndighed: <strong>Center for Cybersikkerhed (CFCS)</strong> under Forsvarets Efterretningstjeneste. Sektormyndighed for energi: <strong>Energistyrelsen</strong>.</p>`;
+    h += `<p><span class="risk risk-h">Høj</span> Manglende varsling inden 24 t er selvstændig overtrædelse.</p>`;
+    h += `<p><span class="law">NIS2 art. 23</span> · <span class="law">CFCS vejledning</span></p>`;
+    return h;
+  }
+
+  if (match(q,['leverandor','supply chain','tredjepart','ict'])) {
+    let h = ctx+`<h3>Leverandørkæde-sikkerhed</h3><p>NIS2 art. 21 stk. 2 litra d + art. 22 kræver styring af hele ICT-forsyningskæden. EU Cybersecurity Coordination Group udarbejder koordinerede risikovurderinger for kritiske leverandører.</p>`;
+    h += `<h3>Minimumskrav</h3><ul><li>Risikovurdering per leverandør — teknisk, geopolitisk, forretningsmæssig</li><li>Kontraktlige sikkerhedskrav ("flow-down")</li><li>Right to audit for væsentlige leverandører</li><li>Incident notification forpligtelser</li><li>Plan for exit/substitution ved kompromittering</li></ul>`;
+    h += `<h3>Særlig opmærksomhed (EU-koordinerede risikovurderinger)</h3><ul><li>5G-netværksudstyr (Toolbox 2020)</li><li>Cloud-tjenester og CSP-koncentration</li><li>Kritiske OT-komponenter (PLC, RTU, SCADA-HMI)</li><li>Trediepart med fjernadgang til driftsmiljø</li></ul>`;
+    h += `<p><span class="law">NIS2 art. 21(2)(d), 22</span> · <span class="law">EU 5G Toolbox</span></p>`;
+    return h;
+  }
+
+  if (match(q,['ot','scada','ics','industri','operational tech','62443'])) {
+    let h = ctx+`<h3>OT-sikkerhed — IEC 62443</h3><p>Internationalt standard-kompleks for Industrial Automation and Control Systems (IACS). Refereret som god praksis under NIS2 og NC Cyber.</p>`;
+    h += `<table><thead><tr><th>Security Level</th><th>Modstander</th><th>Eksempler DK energi</th></tr></thead><tbody>`;
+    h += `<tr><td>SL1</td><td>Tilfældig fejl</td><td>Perifere målere, ældre RTU</td></tr>`;
+    h += `<tr><td>SL2</td><td>Lav-kompetent bevidst angreb</td><td>DSO-stationer, DER-controllere</td></tr>`;
+    h += `<tr><td>SL3</td><td>Kompetent bevidst angreb, rimelige ressourcer</td><td>TSO-stationer, kontrolrum</td></tr>`;
+    h += `<tr><td>SL4</td><td>Statsaktør-niveau</td><td>Energinets NAC/EMS, HVDC-styring</td></tr></tbody></table>`;
+    h += `<h3>Zoner og conduits</h3><ul><li>Segmentér IT og OT (Purdue-model lag 0-5)</li><li>Data diodes eller IDMZ mellem zoner</li><li>Eksplicit allowlist på conduits</li><li>Separat identitets- og opdateringsinfrastruktur for OT</li></ul>`;
+    h += `<p><span class="law">IEC 62443-3-3</span> · <span class="law">NC Cyber art. 29-35</span></p>`;
+    return h;
+  }
+
+  return ctx+`<h3>Fakta</h3><p>${esc(raw)}</p><h3>Analyse</h3><p>For et præcist svar har jeg brug for:</p><ul><li>Er det NIS2 (generel) eller NC Cyber (el-specifik)?</li><li>Er det IT eller OT (SCADA/EMS)?</li><li>Hændelse eller forebyggelse?</li></ul><p>Prøv: <strong>NIS2</strong>, <strong>NC Cyber</strong>, <strong>hændelsesrapport</strong>, <strong>leverandørkæde</strong>, <strong>OT-sikkerhed</strong> eller <strong>IEC 62443</strong>.</p>`;
+}
+
+/* ━━━ GAS & BRINT ENGINE ━━━ */
+function genG(q, raw, tags) {
+  let ctx = ctxNote(tags);
+
+  if (match(q,['brint','hydrogen','pakken','dekarboniseret','1789/2024','1787/2024'])) {
+    let h = ctx+`<h3>EU Brint- og dekarboniseret gas-pakke (2024)</h3><p>Vedtaget maj 2024. Består af to retsakter:</p>`;
+    h += `<table><thead><tr><th>Retsakt</th><th>Emne</th></tr></thead><tbody>`;
+    h += `<tr><td><span class="law">Direktiv (EU) 2024/1788</span></td><td>Fælles regler for interne markeder for VE-gas, naturgas og brint</td></tr>`;
+    h += `<tr><td><span class="law">Forordning (EU) 2024/1789</span></td><td>Interne markeder for VE-gas, naturgas og brint + adgangsregler</td></tr></tbody></table>`;
+    h += `<h3>Kerne-elementer</h3><ul><li><strong>Brint-TSO</strong> som ny regulatorisk rolle — separat certificering</li><li><strong>ENNOH</strong> — European Network of Network Operators for Hydrogen (sidestillet med ENTSOG)</li><li><strong>Unbundling</strong> — streng adskillelse af brint-infrastruktur fra produktion/handel</li><li><strong>Grænseoverskridende regulering</strong> af brint-korridorer og importer</li><li><strong>Naturgas-udfasning</strong> — medlemsstater kan planlægge distributionsnet-nedlukning</li></ul>`;
+    h += `<h3>Frister for DK</h3><p>Implementering i national ret: <strong>5. august 2026</strong>. Dansk brintlov under udarbejdelse — Energinet forventet udpeget som brint-TSO.</p>`;
+    h += `<p><span class="law">(EU) 2024/1788</span> · <span class="law">(EU) 2024/1789</span></p>`;
+    return h;
+  }
+
+  if (match(q,['rfnbo','1184','1185','additionality','tidsmatch','geografi','gron brint'])) {
+    let h = ctx+`<h3>RFNBO — Renewable Fuels of Non-Biological Origin</h3><p>Grøn brint og e-brændsler. Reguleret i delegerede forordninger <span class="law">(EU) 2023/1184</span> og <span class="law">(EU) 2023/1185</span> under RED II/III.</p>`;
+    h += `<h3>Tre kumulative krav</h3><table><thead><tr><th>Krav</th><th>Kerneindhold</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>1. Additionality</strong></td><td>VE-anlæg skal være nyetableret (< 36 mdr. før elektrolysør idrift) eller u-støttet</td></tr>`;
+    h += `<tr><td><strong>2. Temporal correlation</strong></td><td>Månedlig match frem til 2030, <strong>timebaseret</strong> fra 1. jan 2030</td></tr>`;
+    h += `<tr><td><strong>3. Geographical correlation</strong></td><td>Samme budzone (eller interconnectet nabo ved rigelig VE)</td></tr></tbody></table>`;
+    h += `<h3>Undtagelser</h3><ul><li>Budzone med VE-andel ≥ 90% (gennemsnit forrige kalenderår): additionality ikke påkrævet</li><li>Emissionsintensitet < 18 gCO2eq/MJ el: additionality ikke påkrævet</li></ul>`;
+    h += `<h3>GHG-emissionsgrænse</h3><p>RFNBO skal have mindst <strong>70% reduktion</strong> ift. fossil reference (94 gCO2eq/MJ) → maks. <strong>28,2 gCO2eq/MJ</strong>.</p>`;
+    h += `<p><span class="law">RED II art. 27 + delegerede forordninger 2023/1184, 2023/1185</span></p>`;
+    return h;
+  }
+
+  if (match(q,['ptx','power-to-x','500 mw','pulje','udbud','elektrolyse'])) {
+    let h = ctx+`<h3>Dansk PtX-udbud</h3><p>Første udbud efter PtX-strategien (2021). <strong>1,25 mia. DKK støttepulje</strong> til 2022-2030 allokeret i puljer.</p>`;
+    h += `<h3>Første pulje (2022-23)</h3><ul><li>Volumen: 280 MW elektrolyse-kapacitet</li><li>Mekanisme: auktion på fast pristillæg per kg brint i 10 år</li><li>Tildelt til seks projekter — bl.a. Everfuel, HØST, SkovgaardEnergy, European Energy</li><li>Gennemsnitligt vindende bud: ~ 17 DKK/kg tillæg</li></ul>`;
+    h += `<h3>Fremtidige puljer</h3><ul><li>2024-25 puljer under planlægning (retningslinjer under forhandling)</li><li>Tilpasning til RFNBO-krav efter delegerede forordninger</li><li>Koblet med energiøer og havvind-udbygning</li></ul>`;
+    h += `<h3>Udbudskrav</h3><ol><li>VE-oprindelse af el (Guarantees of Origin + PPA)</li><li>Minimum driftstid og uptime-forpligtelse</li><li>Afregning mod realiseret elpris</li><li>Tilladelser (miljø, byggeri) før tildeling</li></ol>`;
+    h += `<p><span class="law">Energistyrelsen PtX-udbudsbekendtgørelse</span> · <span class="law">Statsstøttegodkendelse SA.63720</span></p>`;
+    return h;
+  }
+
+  if (match(q,['gas sogl','459/2017','gas balancering','gaskval','wobbe','methane','biometh','opgrad'])) {
+    let h = ctx+`<h3>Gas — drift og kvalitet</h3>`;
+    h += `<table><thead><tr><th>Parameter</th><th>Dansk krav</th></tr></thead><tbody>`;
+    h += `<tr><td>Wobbe-indeks (H-gas)</td><td>13,7 - 15,7 kWh/Nm³ (varier sæson)</td></tr>`;
+    h += `<tr><td>Brændværdi (overre)</td><td>10,0 - 12,8 kWh/Nm³</td></tr>`;
+    h += `<tr><td>Metantal</td><td>≥ 65</td></tr>`;
+    h += `<tr><td>H2-iblanding (bio + biomet)</td><td>0-2% (under udvidelse)</td></tr>`;
+    h += `<tr><td>Svovlindhold</td><td>≤ 30 mg S/Nm³</td></tr></tbody></table>`;
+    h += `<h3>Biogas-opgradering</h3><p>Fra råbiogas (50-65% CH4) til bionaturgas (≥ 97% CH4) via amin-, membran- eller PSA-opgradering. Skal opfylde Gasreglementets gaskvalitetskrav for indfødning.</p>`;
+    h += `<h3>Balancering</h3><p>Gasmarkedet balanceres efter <span class="law">(EU) 2017/459</span> (kapacitet) og <span class="law">(EU) 312/2014</span> (balancering). Daily balancing med tolerancebånd og neutralpriser.</p>`;
+    h += `<p><span class="law">Gasreglementet C-13</span> · <span class="law">(EU) 2017/459</span></p>`;
+    return h;
+  }
+
+  if (match(q,['forsyningssikker','gas forsyning','2017/1938','co2 transport','ccs','ccus','co2-kabel','rorled'])) {
+    let h = ctx+`<h3>Gas-forsyningssikkerhed</h3><p>Forordning <span class="law">(EU) 2017/1938</span> — sikrer fælles standard for afbrydelser: N-1-regel, solidaritetsmekanisme, nationale beredskabsplaner.</p>`;
+    h += `<h3>Dansk kontekst efter 2022</h3><ul><li>Stop for russisk gas — DK 100% forsyning via NO + Europipe II + Baltic Pipe (2022)</li><li>Nationalt gaslager i Lille Torup (LBT) og Stenlille</li><li>Nedlukning af Tyra-revurderet — nu genåbnet 2024 (DK selvforsynende)</li></ul>`;
+    h += `<h3>CO2-transport</h3><p>Ny EU-ramme under <strong>Net-Zero Industry Act</strong> og <strong>Industrial Carbon Management Strategy</strong> (2024). Mål: <strong>50 Mt CO2/år</strong> injection-kapacitet i EU i 2030, 280 Mt i 2040.</p>`;
+    h += `<ul><li>DK Greensand-projekt — første grænseoverskridende CCS i EU (2023 demo)</li><li>Bifrost og andre danske lager-projekter i Nordsøen</li><li>Åbne CO2-rørledninger forventes reguleret som kritisk infrastruktur</li></ul>`;
+    h += `<p><span class="law">(EU) 2017/1938</span> · <span class="law">Net-Zero Industry Act 2024/1735</span></p>`;
+    return h;
+  }
+
+  return ctx+`<h3>Fakta</h3><p>${esc(raw)}</p><h3>Analyse</h3><p>For et præcist svar har jeg brug for:</p><ul><li>Gas, brint eller begge?</li><li>Produktion, transmission eller slutbrug?</li><li>EU-ramme eller dansk implementering?</li></ul><p>Prøv: <strong>brintpakken</strong>, <strong>RFNBO</strong>, <strong>PtX-udbud</strong>, <strong>gaskvalitet</strong>, <strong>forsyningssikkerhed</strong> eller <strong>CO2-transport</strong>.</p>`;
+}
+
+/* ━━━ ØKONOMI ENGINE ━━━ */
+function genO(q, raw, tags) {
+  let ctx = ctxNote(tags);
+
+  if (match(q,['indtaegtsramme','intaegt','wacc','regulering','forsyningstilsyn'])) {
+    let h = ctx+`<h3>Indtægtsrammer — økonomisk regulering</h3><p>Forsyningstilsynet (FST) fastsætter indtægtsrammer for Energinet og net-DSO'er efter <span class="law">Elforsyningsloven §§ 69-71</span>.</p>`;
+    h += `<h3>Formel-struktur</h3><pre>Indtægtsramme = OPEX + CAPEX + Afkast (WACC)\n              + OPEX/CAPEX-justeringer\n              – benchmark-effektiviseringskrav\n              ± forsinkelseselementer</pre>`;
+    h += `<table><thead><tr><th>Komponent</th><th>Fastsættelse</th></tr></thead><tbody>`;
+    h += `<tr><td>Afkast (WACC)</td><td>Reguleringsperiode 4 år, FST's metodevejledning</td></tr>`;
+    h += `<tr><td>OPEX-ramme</td><td>Historisk + benchmark mod DEA/DKI</td></tr>`;
+    h += `<tr><td>CAPEX-godkendelse</td><td>Projektprøve for store investeringer</td></tr>`;
+    h += `<tr><td>Effektiviseringskrav</td><td>Generelt + individuelt (DEA-frontier)</td></tr></tbody></table>`;
+    h += `<h3>WACC-komponenter (2024-27 reg.per.)</h3><ul><li>Risikofri rente — 10-årig dansk statsobligation (glidende)</li><li>Markedsrisikopræmie — 5,0%</li><li>Beta (asset) — sektor-specifik</li><li>Gearing — 60% (antaget fremmedkapital)</li><li>Skatteskjold inkluderet efter selskabsskat 22%</li></ul>`;
+    h += `<p><span class="law">EFL §§ 69-71</span> · <span class="law">FST Metodevejledning 2023</span></p>`;
+    return h;
+  }
+
+  if (match(q,['tarif','§ 73','73','omkostningsaeg','tso-tarif','network tarif'])) {
+    let h = ctx+`<h3>Tarifdesign</h3><p>Tariffer for brug af transmissions- og distributionsnet fastsættes af TSO/DSO efter <span class="law">EFL § 73</span> og godkendes af Forsyningstilsynet.</p>`;
+    h += `<h3>Principper</h3><ul><li><strong>Omkostningsægthed</strong> — tariffen afspejler faktiske omkostninger ved nettet</li><li><strong>Ikke-diskrimination</strong> — objektive og transparente kriterier</li><li><strong>Rimelighed</strong> — ikke prohibitivt for adgang</li><li><strong>Signaleffekt</strong> — skal tilskynde effektiv netbrug (f.eks. tidsdifferentiering)</li></ul>`;
+    h += `<h3>Strukturkomponenter</h3><table><thead><tr><th>Led</th><th>Beskrivelse</th></tr></thead><tbody>`;
+    h += `<tr><td>Energibetaling</td><td>DKK/MWh — typisk tidsdifferentieret</td></tr>`;
+    h += `<tr><td>Effektbetaling</td><td>DKK/kW per år — dimensionerende toplast</td></tr>`;
+    h += `<tr><td>Abonnement</td><td>Fast DKK/år per måler</td></tr>`;
+    h += `<tr><td>Systemtarif</td><td>Energinet — balancering, reserver, forsk.</td></tr></tbody></table>`;
+    h += `<h3>Nye udviklinger</h3><p>EU-udvikling af <strong>Network Tariff Guidance</strong> under CEP — øget fokus på effektbaseret og dynamisk prissætning. Diskussion om direkte linje-tariffer til industriforbrug (PtX, datacentre).</p>`;
+    h += `<p><span class="law">EFL § 73</span> · <span class="law">Bek. om nettarifering</span></p>`;
+    return h;
+  }
+
+  if (match(q,['statsst','state aid','ceeag','gber','cfd notif','2014/25'])) {
+    let h = ctx+`<h3>Statsstøtte — energi- og klimaprojekter</h3>`;
+    h += `<table><thead><tr><th>Ramme</th><th>Anvendelse</th></tr></thead><tbody>`;
+    h += `<tr><td><strong>CEEAG</strong> (2022)</td><td>Climate, Environmental protection and Energy Aid Guidelines</td></tr>`;
+    h += `<tr><td><strong>GBER</strong> (651/2014, ændret 2023)</td><td>General Block Exemption — notifikationsfritagelse</td></tr>`;
+    h += `<tr><td><strong>TCTF</strong> (2022-25)</td><td>Temporary Crisis and Transition Framework</td></tr>`;
+    h += `<tr><td><strong>SGEI</strong></td><td>Services of General Economic Interest</td></tr></tbody></table>`;
+    h += `<h3>CfD-notifikation — proces</h3><ol><li>National ordning udformes efter CEEAG kap. 4</li><li>Prænotifikation til Kommissionen (DG COMP)</li><li>Formelt notifikationsudkast — Art. 108(3) TEUF</li><li>Godkendelse (typisk 6-12 mdr for havvind)</li><li>Standstill-klausul: tildeling må først efter godkendelse</li></ol>`;
+    h += `<h3>Eksempler</h3><ul><li><strong>Thor havvindpark</strong> — ingen CfD, negativt bud → ingen statsstøtte-notifikation nødvendig</li><li><strong>PtX-udbud</strong> — Kommissionsgodkendt som SA.63720</li><li><strong>Biogas-støtte</strong> — under løbende revision</li></ul>`;
+    h += `<p><span class="law">TEUF Art. 107-108</span> · <span class="law">CEEAG 2022/C 80/01</span></p>`;
+    return h;
+  }
+
+  if (match(q,['csrd','2022/2464','baeredygtig','corporate sustain','esrs','dobbelt vaesent','sustainability report','e1','s1','g1'])) {
+    let h = ctx+`<h3>CSRD og ESRS</h3><p>Corporate Sustainability Reporting Directive <span class="law">(EU) 2022/2464</span> afløser NFRD. Rapportering efter European Sustainability Reporting Standards (ESRS), vedtaget i <span class="law">Delegeret forordning (EU) 2023/2772</span>.</p>`;
+    h += `<h3>Indfasning</h3><table><thead><tr><th>År</th><th>Omfattet</th></tr></thead><tbody>`;
+    h += `<tr><td>2024</td><td>Store enheder af almen interesse > 500 ansatte (inkl. Energinet)</td></tr>`;
+    h += `<tr><td>2025</td><td>Øvrige store virksomheder</td></tr>`;
+    h += `<tr><td>2026</td><td>Børsnoterede SMV'er</td></tr>`;
+    h += `<tr><td>2028</td><td>Non-EU-koncerner med EU-omsætning > 150 mio. EUR</td></tr></tbody></table>`;
+    h += `<h3>ESRS-standarder (12 stk.)</h3><ul><li><strong>ESRS 1-2</strong> — tværgående: generelle krav, generelle oplysninger</li><li><strong>E1-E5</strong> — klima, forurening, vand, biodiversitet, cirkulær</li><li><strong>S1-S4</strong> — egen arbejdsstyrke, leverandørkæde, berørte lokalsamfund, forbrugere</li><li><strong>G1</strong> — forretningsmetode</li></ul>`;
+    h += `<h3>Dobbelt væsentlighed</h3><p>Virksomheden skal rapportere om temaer hvor enten (a) virksomheden påvirker miljø/samfund væsentligt eller (b) temaet påvirker virksomhedens værdiskabelse væsentligt. Ikke enten-eller — begge perspektiver obligatorisk.</p>`;
+    h += `<p><span class="law">(EU) 2022/2464</span> · <span class="law">ESRS forordning (EU) 2023/2772</span></p>`;
+    return h;
+  }
+
+  if (match(q,['eu-udbud','forsynings direktiv','2014/25','udbud'])) {
+    let h = ctx+`<h3>Forsyningsvirksomhedsdirektivet</h3><p><span class="law">Direktiv (EU) 2014/25</span> — gælder TSO/DSO ved indkøb over tærskelværdier. Implementeret i DK ved Udbudsloven og Forsyningsvirksomhedsloven.</p>`;
+    h += `<h3>Tærskler 2024-25</h3><table><thead><tr><th>Kontrakttype</th><th>Tærskel (EUR)</th><th>DKK</th></tr></thead><tbody>`;
+    h += `<tr><td>Varer/tjenesteydelser</td><td>443.000</td><td>~3,3 mio.</td></tr>`;
+    h += `<tr><td>Bygge- og anlæg</td><td>5.538.000</td><td>~41 mio.</td></tr>`;
+    h += `<tr><td>Sociale og særlige</td><td>1.000.000</td><td>~7,5 mio.</td></tr></tbody></table>`;
+    h += `<h3>Procedurer</h3><ul><li>Offentligt udbud</li><li>Begrænset udbud</li><li>Forhandling med forudgående indkaldelse</li><li>Konkurrencepræget dialog</li><li>Innovationspartnerskab</li><li>Udbud med forhandling (mere fleksibelt end klassisk direktiv)</li></ul>`;
+    h += `<h3>Særligt for forsyning</h3><p>Mere fleksibel end klassisk direktiv 2014/24 — kvalifikationsordninger tilladt, rammeaftaler op til 8 år, særlige kriterier for leverandørkvalifikation.</p>`;
+    h += `<p><span class="law">(EU) 2014/25</span> · <span class="law">Forsyningsvirksomhedsloven</span></p>`;
+    return h;
+  }
+
+  if (match(q,['ten-e','2022/869','pci','projects of common'])) {
+    let h = ctx+`<h3>TEN-E og PCI</h3><p>Revideret TEN-E-forordning <span class="law">(EU) 2022/869</span>. Udpeger trans-europæiske energiinfrastruktur-prioriteter og "Projects of Common Interest" (PCI).</p>`;
+    h += `<h3>Nye prioritetskorridorer (efter 2022-revision)</h3><ul><li>Udelukkelse af fossil gas-infrastruktur fra PCI-status</li><li>Nye korridorer: offshore grids, brint, smart grids, CO2-netværk</li><li>PMI-status for projekter med tredjelande</li></ul>`;
+    h += `<h3>Fordele ved PCI</h3><table><thead><tr><th>Fordel</th><th>Konkret</th></tr></thead><tbody>`;
+    h += `<tr><td>Hurtigsagsbehandling</td><td>Sagsfrist 3,5 år, one-stop-shop national myndighed</td></tr>`;
+    h += `<tr><td>Finansiering</td><td>Connecting Europe Facility (CEF) tilskud</td></tr>`;
+    h += `<tr><td>Grænseoverskr. omkostningsdeling</td><td>CBCA-afgørelser af ACER</td></tr>`;
+    h += `<tr><td>Regulatorisk stabilitet</td><td>Incitament-regulering muligt</td></tr></tbody></table>`;
+    h += `<h3>Danske PCI'er</h3><ul><li>Viking Link (idriftsat dec 2023)</li><li>Bornholm Energy Island (under planlægning)</li><li>Nordsø-energiø (forsinket)</li><li>Brint-korridorer til Tyskland og Holland</li></ul>`;
+    h += `<p><span class="law">(EU) 2022/869</span> · <span class="law">ACER CBCA-afgørelser</span></p>`;
+    return h;
+  }
+
+  return ctx+`<h3>Fakta</h3><p>${esc(raw)}</p><h3>Analyse</h3><p>For et præcist svar har jeg brug for:</p><ul><li>Regulatorisk økonomi (indtægtsrammer, tariffer) eller forretningskompliance (udbud, statsstøtte, CSRD)?</li><li>Energinet, DSO, eller markedsaktør?</li><li>EU-niveau eller national dansk ramme?</li></ul><p>Prøv: <strong>indtægtsrammer</strong>, <strong>tariffer</strong>, <strong>statsstøtte</strong>, <strong>CSRD</strong>, <strong>EU-udbud</strong> eller <strong>TEN-E PCI</strong>.</p>`;
+}
+
+/* ━━━ SKILL DETAILS ━━━ */
+const skillInfo = {
+n: {
+  sections: [
+    {h:'Grundprincipper', html:`<ul>
+      <li><strong>Citér altid retskilden</strong> — EU-forordning, NC-titel, TF-nummer, EFL-paragraf</li>
+      <li><strong>Synkronområde-bevidst</strong> — skeln konsekvent mellem DK1 (CE) og DK2 (Nordic)</li>
+      <li><strong>Kvantitativ dimensionering</strong> — MW, ms, Hz-bånd, ikke kun principper</li>
+      <li><strong>Operationel kontekst</strong> — hvad gør SCADA/EMS, kontrolrummet, RSC</li>
+      <li><strong>Flag risici</strong> — N-1-brud, manglende FRT, syntetisk inerti-mangel</li></ul>`},
+    {h:'SOGL fem hovedområder', html:`<table><tr><th>#</th><th>Område</th><th>Artikler</th></tr>
+      <tr><td>1</td><td>Driftssikkerhed</td><td>Art. 18–41</td></tr>
+      <tr><td>2</td><td>Driftsplanlægning</td><td>Art. 42–113</td></tr>
+      <tr><td>3</td><td>LFC og reserver</td><td>Art. 118–189</td></tr>
+      <tr><td>4</td><td>Driftstilstande</td><td>Art. 18–25, 141</td></tr>
+      <tr><td>5</td><td>Data/information</td><td>Art. 40–53</td></tr></table>`},
+    {h:'Nøgletal', html:`<table><tr><th>Parameter</th><th>Værdi</th></tr>
+      <tr><td>Frekvens-dødbånd (CE)</td><td>±20 mHz</td></tr>
+      <tr><td>Frekvens-dødbånd (Nordic)</td><td>±100 mHz</td></tr>
+      <tr><td>FCR-D aktiveringstid</td><td>≤ 30 s</td></tr>
+      <tr><td>aFRR fuld aktivering</td><td>≤ 5 min</td></tr>
+      <tr><td>mFRR fuld aktivering</td><td>≤ 15 min</td></tr>
+      <tr><td>N-1 imbalance (Nordic)</td><td>≤ 1.450 MW</td></tr>
+      <tr><td>Type D-grænse DK</td><td>≥ 75 MW / ≥ 110 kV</td></tr></table>`},
+    {h:'Referencefiler', html:`<ul>
+      <li><code>references/sogl.md</code> — SOGL-forordningen 2017/1485 opsummeret</li>
+      <li><code>references/nc-rfg.md</code> — NC RfG 2016/631 Type A–D + FRT</li>
+      <li><code>references/nc-hvdc.md</code> — NC HVDC 2016/1447</li>
+      <li><code>references/elforsyningsloven.md</code> — LBK 1193/2023</li>
+      <li><code>references/netregler.md</code> — Energinets netregler</li>
+      <li><code>references/tekniske-forskrifter.md</code> — TF 3.2.1-3.3.1</li>
+      <li><code>data/hvdc-forbindelser.json</code> — Alle DK HVDC med kapacitet og teknologi</li>
+      <li><code>data/reserver-dk1-dk2.json</code> — Kvantitative reservekrav</li></ul>`}
+  ]
+},
+m: {
+  sections: [
+    {h:'Grundprincipper', html:`<ul>
+      <li><strong>REMIT II-centreret</strong> — 2024/1106 er ny norm, ikke længere 1227/2011 alene</li>
+      <li><strong>Kvantificér sanktioner</strong> — % af omsætning, EUR, og indenlandske tillæg</li>
+      <li><strong>Farvekodede risici</strong> — Grøn (formel), Gul (regelbrud), Orange (sanktion), Rød (strafansvar)</li>
+      <li><strong>ACER/FSTS-perspektiv</strong> — hvem fører tilsyn, hvem efterforsker</li>
+      <li><strong>Handlingsorienteret</strong> — hvordan registrere, rapportere, kill-switch</li></ul>`},
+    {h:'REMIT II kerne-krav', html:`<table><tr><th>Artikel</th><th>Emne</th></tr>
+      <tr><td>Art. 3</td><td>Forbud mod insiderhandel</td></tr>
+      <tr><td>Art. 4</td><td>Pligt til UMM / offentliggørelse</td></tr>
+      <tr><td>Art. 5</td><td>Forbud mod markedsmanipulation</td></tr>
+      <tr><td>Art. 9</td><td>Registrering af markedsdeltagere</td></tr>
+      <tr><td>Art. 13b</td><td>Algoritmisk handel — kill-switch</td></tr>
+      <tr><td>Art. 18</td><td>Sanktioner op til 15% af omsætning</td></tr></table>`},
+    {h:'Gate closure tidslinje', html:`<table><tr><th>Tidspunkt</th><th>Event</th></tr>
+      <tr><td>D-1 12:00</td><td>SDAC gate closure</td></tr>
+      <tr><td>D-1 12:42</td><td>SDAC resultater</td></tr>
+      <tr><td>D-1 14:00</td><td>Intraday åbner</td></tr>
+      <tr><td>D t-60</td><td>Balance plan til TSO</td></tr>
+      <tr><td>D t-25</td><td>XBID gate closure</td></tr>
+      <tr><td>D t</td><td>Realtid aFRR/mFRR</td></tr>
+      <tr><td>D+1</td><td>Imbalance settlement</td></tr></table>`},
+    {h:'Referencefiler', html:`<ul>
+      <li><code>references/remit-ii.md</code> — Forordning 2024/1106 opsummeret</li>
+      <li><code>references/cacm.md</code> — CACM 2015/1222</li>
+      <li><code>references/ebgl.md</code> — EBGL 2017/2195</li>
+      <li><code>references/markedsmisbrug-sager.md</code> — Katalog af historiske sager</li>
+      <li><code>data/nemos.json</code> — Nominated Electricity Market Operators</li>
+      <li><code>templates/umm-template.md</code> — Skabelon til UMM-offentliggørelse</li></ul>`}
+  ]
+},
+e: {
+  sections: [
+    {h:'Grundprincipper', html:`<ul>
+      <li><strong>Bindende EU-mål</strong> som anker — RED III 42,5%, ETS -62%, klimaneutralitet 2050</li>
+      <li><strong>Dansk skærpelse</strong> — 70%/2030, klimaneutralitet 2045</li>
+      <li><strong>Proces før substans</strong> — VVM, miljøgodkendelse, habitatscreening først</li>
+      <li><strong>Økonomisk kvantificering</strong> — ETS-pris, CBAM-omkostning, VE-støtte</li>
+      <li><strong>Lokal accept</strong> — køberet, værditab, grøn pulje</li></ul>`},
+    {h:'Bindende 2030-mål (DK)', html:`<table><tr><th>Område</th><th>Mål</th><th>Basis</th></tr>
+      <tr><td>Samlet reduktion</td><td>−70%</td><td>vs. 1990</td></tr>
+      <tr><td>ESR (non-ETS)</td><td>−50%</td><td>vs. 2005</td></tr>
+      <tr><td>VE-andel</td><td>min. 42,5% (EU)</td><td>endelig energi</td></tr>
+      <tr><td>Transport VE</td><td>29% / 14,5% GHG</td><td>—</td></tr>
+      <tr><td>LULUCF</td><td>netsenke −5,6 Mt</td><td>årligt gns.</td></tr></table>`},
+    {h:'CBAM-produkter', html:`<table><tr><th>Sektor</th><th>HS-koder</th></tr>
+      <tr><td>Cement</td><td>2507, 2523</td></tr>
+      <tr><td>Jern og stål</td><td>72, 7301–7326</td></tr>
+      <tr><td>Aluminium</td><td>76</td></tr>
+      <tr><td>Gødning</td><td>2808, 2814, 31</td></tr>
+      <tr><td>Elektricitet</td><td>2716</td></tr>
+      <tr><td>Hydrogen</td><td>2804</td></tr></table>
+      <p>Fuld ikrafttræden: <strong>1. januar 2026</strong>.</p>`},
+    {h:'Referencefiler', html:`<ul>
+      <li><code>references/eu-ets.md</code> — Direktiv 2003/87 + 2023/959</li>
+      <li><code>references/cbam.md</code> — Forordning 2023/956</li>
+      <li><code>references/red-iii.md</code> — Direktiv 2023/2413</li>
+      <li><code>references/klimaloven.md</code> — Lov 965/2020 + årsprogram</li>
+      <li><code>references/vvm.md</code> — Miljøvurderingsloven LBK 4/2023</li>
+      <li><code>references/ve-loven.md</code> — LBK 1791/2023</li>
+      <li><code>data/havvind-projekter.json</code> — DK udbud + status</li></ul>`}
+  ]
+},
+c: {
+  sections: [
+    {h:'Grundprincipper', html:`<ul>
+      <li><strong>NIS2 er hovedramme</strong> — NC Cyber supplerer med sektor-specifikke regler</li>
+      <li><strong>IT/OT-skelnen</strong> — OT har særlige krav (segmentering, forsinket patch, IEC 62443)</li>
+      <li><strong>Rapporteringsdisciplin</strong> — 24 / 72 timer / 1 måned er absolutte frister</li>
+      <li><strong>Leverandørkæde</strong> — kontraktlig "flow-down", right to audit, exit-plan</li>
+      <li><strong>Flag geopolitisk risiko</strong> — 5G, cloud-koncentration, kritiske OT-komponenter</li></ul>`},
+    {h:'NIS2 vs NC Cyber', html:`<table><tr><th>Emne</th><th>NIS2</th><th>NC Cyber</th></tr>
+      <tr><td>Omfang</td><td>Horisontal</td><td>Sektor-specifik (el)</td></tr>
+      <tr><td>Retsakt</td><td>Direktiv</td><td>Forordning</td></tr>
+      <tr><td>Aktiv-kategorier</td><td>Væsentlig / vigtig</td><td>HII / CII / ECII</td></tr>
+      <tr><td>Tilsyn</td><td>CFCS + sektor</td><td>ACER + ENTSO-E</td></tr>
+      <tr><td>Maks. bøde</td><td>10 mio. EUR / 2% oms.</td><td>Via NIS2-hjemmel</td></tr></table>`},
+    {h:'Rapporteringsfrister', html:`<table><tr><th>Tid</th><th>Krav</th></tr>
+      <tr><td>Straks</td><td>Internt beredskab aktiveret</td></tr>
+      <tr><td>24 timer</td><td>Early warning til CFCS</td></tr>
+      <tr><td>72 timer</td><td>Hændelsesrapport</td></tr>
+      <tr><td>1 måned</td><td>Endelig rapport</td></tr></table>`},
+    {h:'Referencefiler', html:`<ul>
+      <li><code>references/nis2.md</code> — Direktiv 2022/2555 + dansk lov</li>
+      <li><code>references/nc-cyber.md</code> — Forordning 2024/1366</li>
+      <li><code>references/cer.md</code> — CER-direktiv 2022/2557</li>
+      <li><code>references/iec-62443.md</code> — OT-sikkerhed referenceramme</li>
+      <li><code>templates/incident-report.md</code> — Skabelon til hændelsesrapport</li>
+      <li><code>data/hii-cii-klassifikation.json</code> — Aktiv-kategori mapping</li></ul>`}
+  ]
+},
+g: {
+  sections: [
+    {h:'Grundprincipper', html:`<ul>
+      <li><strong>EU brintpakke 2024</strong> er ny norm — separat brint-TSO, ENNOH, unbundling</li>
+      <li><strong>RFNBO tre-punkts-test</strong> — additionality, temporal, geographical</li>
+      <li><strong>Gas-forsyning radikalt ændret</strong> 2022 — ingen russisk import, Baltic Pipe, Tyra-genåbning</li>
+      <li><strong>PtX-udbud er tilskudsauktion</strong> — fast tillæg per kg, ikke CfD på strøm</li>
+      <li><strong>CO2-infrastruktur</strong> emerger som kritisk infrastruktur (Net-Zero Industry Act)</li></ul>`},
+    {h:'RFNBO-krav opsummeret', html:`<table><tr><th>Krav</th><th>Før 2030</th><th>Fra 2030</th></tr>
+      <tr><td>Additionality</td><td>Gælder</td><td>Gælder</td></tr>
+      <tr><td>Temporal match</td><td>Månedlig</td><td>Timebaseret</td></tr>
+      <tr><td>Geografisk match</td><td>Samme budzone</td><td>Samme budzone</td></tr>
+      <tr><td>GHG-reduktion</td><td>≥ 70%</td><td>≥ 70%</td></tr></table>`},
+    {h:'Referencefiler', html:`<ul>
+      <li><code>references/brintpakken.md</code> — (EU) 2024/1788 + 2024/1789</li>
+      <li><code>references/rfnbo.md</code> — Delegerede forordninger 2023/1184, 2023/1185</li>
+      <li><code>references/ptx-udbud.md</code> — Dansk PtX-strategi og pulje-design</li>
+      <li><code>references/gaskvalitet.md</code> — Gasreglementet C-13</li>
+      <li><code>references/gasforsyning.md</code> — (EU) 2017/1938 + dansk beredskab</li>
+      <li><code>data/gas-brint-infrastruktur.json</code> — Gasnet, lagre, brint-korridorer</li></ul>`}
+  ]
+},
+o: {
+  sections: [
+    {h:'Grundprincipper', html:`<ul>
+      <li><strong>Forsyningstilsynet</strong> er regulatoren — afgørelser skal citeres ved navn</li>
+      <li><strong>Indtægtsramme = OPEX + CAPEX + WACC·RAB</strong> — grundstruktur for al økonomisk regulering</li>
+      <li><strong>Statsstøtte er tidskritisk</strong> — standstill indtil Kommissionsgodkendelse</li>
+      <li><strong>CSRD dobbelt væsentlighed</strong> — både påvirkning FRA og PÅ virksomheden</li>
+      <li><strong>Forsyningsudbud er mere fleksibelt</strong> end klassisk udbudsdirektiv</li></ul>`},
+    {h:'Centrale retskilder', html:`<table><tr><th>Område</th><th>Hjemmel</th></tr>
+      <tr><td>Indtægtsrammer</td><td>EFL §§ 69-71</td></tr>
+      <tr><td>Tariffer</td><td>EFL § 73</td></tr>
+      <tr><td>Statsstøtte</td><td>TEUF art. 107-108, CEEAG 2022</td></tr>
+      <tr><td>CSRD</td><td>(EU) 2022/2464, ESRS 2023/2772</td></tr>
+      <tr><td>Udbud</td><td>(EU) 2014/25</td></tr>
+      <tr><td>TEN-E</td><td>(EU) 2022/869</td></tr></table>`},
+    {h:'Referencefiler', html:`<ul>
+      <li><code>references/indtaegtsrammer.md</code> — FST metodevejledning + WACC</li>
+      <li><code>references/tariffer.md</code> — § 73 og tarifprincipper</li>
+      <li><code>references/statsstoette.md</code> — CEEAG, GBER, notifikationsproces</li>
+      <li><code>references/csrd-esrs.md</code> — 12 ESRS-standarder + dobbelt væsentlighed</li>
+      <li><code>references/forsyningsudbud.md</code> — (EU) 2014/25 tærskler og procedurer</li>
+      <li><code>references/ten-e.md</code> — (EU) 2022/869 + PCI-proces</li>
+      <li><code>data/pci-dk.json</code> — Danske PCI-projekter og status</li></ul>`}
+  ]
+}
+};
+
+function showSkill(id) {
+  const a = A[id], s = skillInfo[id];
+  const overlay = document.createElement('div');
+  overlay.className = 'skill-overlay';
+  overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+  overlay.innerHTML = `<div class="skill-modal">
+    <div class="skill-modal-head">
+      <div class="skill-modal-icon" style="background:${a.grad}">${a.icon}</div>
+      <div class="skill-modal-title">${a.name} — Skill-dokumentation</div>
+      <button class="skill-modal-close" onclick="this.closest('.skill-overlay').remove()">✕</button>
+    </div>
+    <div class="skill-modal-body">
+      ${s.sections.map(sec => `<h4>${sec.h}</h4>${sec.html}`).join('')}
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+/* ━━━ INIT ━━━ */
+(function initAgent(){
+  const params = new URLSearchParams(window.location.search);
+  const requested = (params.get('agent') || '').toLowerCase();
+  const valid = ['n','m','e','c','g','o'];
+  sw(valid.includes(requested) ? requested : 'n');
+})();
+</script>
+</body>
+</html>
