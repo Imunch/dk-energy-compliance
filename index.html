@@ -320,49 +320,6 @@ body::before {
   color: var(--text4);
 }
 
-.test-hint {
-  margin-top: 1rem;
-  border: 1px dashed var(--border);
-  border-radius: var(--r);
-  overflow: hidden;
-}
-
-.test-toggle {
-  width: 100%;
-  display: flex; align-items: center; gap: .4rem;
-  padding: .5rem .75rem;
-  background: var(--bg-wash);
-  border: none;
-  cursor: pointer;
-  font: 600 .7rem/1 var(--sans);
-  color: var(--text3);
-  transition: all var(--t);
-}
-.test-toggle:hover { background: var(--teal-bg); color: var(--teal-text); }
-.test-toggle .chevron { margin-left: auto; transition: transform .2s; }
-.test-creds.open + .test-toggle .chevron { transform: rotate(180deg); }
-
-.test-creds { max-height: 0; overflow: hidden; transition: max-height .25s ease; }
-.test-creds.open { max-height: 240px; }
-
-.test-creds table { width: 100%; border-collapse: collapse; font-size: .7rem; }
-.test-creds th {
-  text-align: left;
-  padding: .35rem .75rem;
-  font-weight: 600;
-  color: var(--text3);
-  background: var(--bg);
-  border-bottom: 1px solid var(--border-subtle);
-}
-.test-creds td {
-  padding: .35rem .75rem;
-  color: var(--text2);
-  border-bottom: 1px solid var(--border-subtle);
-}
-.test-creds tr:last-child td { border-bottom: none; }
-.test-creds tbody tr { cursor: pointer; transition: background var(--t); }
-.test-creds tbody tr:hover { background: var(--teal-bg); }
-
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
@@ -442,23 +399,6 @@ body::before {
     </button>
   </div>
 
-  <div class="test-hint">
-    <div class="test-creds" id="testCreds">
-      <table>
-        <thead>
-          <tr><th>Brugernavn</th><th>Adgangskode</th><th>Rolle</th></tr>
-        </thead>
-        <tbody>
-          <tr onclick="fillTest('kunde','Q4')"><td>kunde</td><td>Q4</td><td>Kunde</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <button type="button" class="test-toggle" onclick="toggleTestCreds()">
-      Testbrugere
-      <svg class="chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
-    </button>
-  </div>
-
   <div class="card-footer">
     <p>Ny bruger? <a href="#">Opret konto</a></p>
   </div>
@@ -480,10 +420,6 @@ function togglePassword() {
     pw.type = 'password';
     icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>';
   }
-}
-
-function toggleTestCreds() {
-  document.getElementById('testCreds').classList.toggle('open');
 }
 
 function handleLogin(e) {
@@ -513,7 +449,7 @@ function handleLogin(e) {
       document.getElementById('errorText').textContent =
         TEST_USERS[email]
           ? 'Forkert adgangskode — prøv igen'
-          : 'Ukendt brugernavn — brug en testbruger (se nedenfor)';
+          : 'Ukendt brugernavn eller adgangskode';
       error.classList.add('show');
     }
   }, 1500);
@@ -522,14 +458,7 @@ function handleLogin(e) {
 function handleSSO(provider) {
   const label = provider === 'nemlogin' ? 'NemLog-in' : 'SSO';
   alert(label + ' integration er ikke konfigureret endnu.\nKontakt din administrator for opsætning.');
-}
-
-function fillTest(email, pw) {
-  document.getElementById('email').value = email;
-  document.getElementById('password').value = pw;
-  document.getElementById('error').classList.remove('show');
-  document.getElementById('submitBtn').focus();
-}
+  }
 
 document.getElementById('email').focus();
 </script>
